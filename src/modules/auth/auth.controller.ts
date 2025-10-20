@@ -21,4 +21,9 @@ export class AuthController {
   async sendOtp(@Body('email') email: string) {
     return await this.authService.sendOtp(email);
   }
+
+  @Post('verify-otp')
+  async verifyOtp(@Body('email') email: string, @Body('otp') otp: string) {
+    return await this.authService.verifyOtp(email, otp);
+  }
 }

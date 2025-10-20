@@ -63,6 +63,21 @@ export class AuthService {
     };
   }
 
+  async verifyOtp(email: string, otp: string) {
+    const user: ICreateUserDto | null =
+      await this.userService.findByEmail(email);
+    if (!user) throw new HttpException(EError.USER_NOT_FOUND, 404);
+    if (user.otp !== otp) throw new HttpException(EError.INVALID_OTP, 400);
+    if (user.otpExpiry && user.otpExpiry < new Date())
+      throw new HttpException(EError.OTP_EXPIRED, 400);
+
+    user.otp = null;
+    user.otpExpiry = null;
+    user.verified = true;
+    await this.userService.update(user._id!, user);
+    return { verified: true };
+  }
+
   private generateOtp(): string {
     return Math.floor(1_000 + Math.random() * 9_000).toString();
   }
