@@ -5,12 +5,14 @@ import { compareSync, genSaltSync, hashSync } from 'bcrypt-ts';
 import { LoginDto } from './dto/login.dto';
 import { EError } from '../../Enums/EError';
 import { JwtService } from '@nestjs/jwt';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
   async register(createUserDto: ICreateUserDto): Promise<ICreateUserDto> {
     const salt = genSaltSync(parseInt(process.env.SALT_ROUNDS + '') || 10);
@@ -19,6 +21,7 @@ export class AuthService {
     createUserDto.otp = this.generateOtp();
     createUserDto.otpExpiry = new Date(Date.now() + 30 * 60 * 1000);
     const user: ICreateUserDto = await this.userService.create(createUserDto);
+    await this.mailService.sendOtp(user.email, user.otp!);
     return user;
   }
 
@@ -38,6 +41,25 @@ export class AuthService {
         expiresIn: parseInt(process.env.JWT_EXPIRES_IN + '') || '1h',
       }),
       verified: user.verified,
+    };
+  }
+
+  async sendOtp(
+    email: string,
+  ): Promise<{ verified: boolean; message: string }> {
+    const user: ICreateUserDto | null =
+      await this.userService.findByEmail(email);
+    if (!user) throw new HttpException(EError.USER_NOT_FOUND, 404);
+    const otp = this.generateOtp();
+    await this.userService.update(user._id!, {
+      otp,
+      otpExpiry: new Date(Date.now() + 30 * 60 * 1000),
+      verified: false,
+    });
+    await this.mailService.sendOtp(user.email, otp);
+    return {
+      verified: false,
+      message: `OTP sent to ${email}. It is valid for 30 minutes.`,
     };
   }
 
