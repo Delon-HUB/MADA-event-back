@@ -23,7 +23,18 @@ export class UserService {
     } as ICreateUserDto;
   }
 
+  async update(id: string, updateUserDto: Partial<ICreateUserDto>) {
+    const user = await this.findById(id);
+    if (!user) throw new HttpException(EError.USER_NOT_FOUND, 404);
+    await this.userModel.updateOne({ _id: id }, { $set: updateUserDto }).exec();
+    return this.findById(id);
+  }
+
   async findByEmail(email: string): Promise<UserEntity | null> {
     return this.userModel.findOne({ email }).exec();
+  }
+
+  async findById(id: string): Promise<UserEntity | null> {
+    return this.userModel.findById(id).exec();
   }
 }

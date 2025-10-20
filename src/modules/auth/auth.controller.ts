@@ -11,4 +11,19 @@ export class AuthController {
   async register(@Body() createUserDto: ICreateUserDto) {
     return await this.authService.register(createUserDto);
   }
+
+  @Post('login')
+  async login(@Body() loginDto: LoginDto) {
+    return await this.authService.login(loginDto);
+  }
+
+  @Post('send-otp')
+  async sendOtp(@Body('email') email: string) {
+    return await this.authService.sendOtp(email);
+  }
+
+  @Post('verify-otp')
+  async verifyOtp(@Body('email') email: string, @Body('otp') otp: string) {
+    return await this.authService.verifyOtp(email, otp);
+  }
 }
