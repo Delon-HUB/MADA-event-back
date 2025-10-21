@@ -7,6 +7,7 @@ import {
 import { UserService } from './user.service';
 import type { Request as Req } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { EError } from '../../Enums/EError';
 
 @Controller('user')
 export class UserController {
@@ -18,15 +19,15 @@ export class UserController {
   @Get('me')
   async getByToken(@Request() req: Req) {
     const token = this.extractTokenFromHeader(req);
-    if (!token) throw new UnauthorizedException();
+    if (!token) throw new UnauthorizedException(EError.TOKEN_INVALID);
     try {
       const payload = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET || 'fdsafkjfkjdsafljwlkjfl',
       });
-      if (!payload.sub) throw new UnauthorizedException('INVALID TOKEN');
+      if (!payload.sub) throw new UnauthorizedException(EError.TOKEN_EXPIRED);
       return this.userService.findById(payload.sub);
     } catch (error) {
-      throw new UnauthorizedException(error);
+      throw new UnauthorizedException(EError.TOKEN_EXPIRED);
     }
   }
 
