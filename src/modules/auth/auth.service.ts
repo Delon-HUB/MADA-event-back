@@ -6,6 +6,7 @@ import { LoginDto } from './dto/login.dto';
 import { EError } from '../../Enums/EError';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from '../mail/mail.service';
+import { IJwtPayload } from '../../interfaces/IJwtPayload';
 
 @Injectable()
 export class AuthService {
@@ -34,11 +35,14 @@ export class AuthService {
     if (!user) throw new HttpException(EError.USER_NOT_FOUND, 404);
     const isPasswordValid = compareSync(loginDto.password, user.password);
     if (!isPasswordValid) throw new HttpException(EError.WRONG_PASSWORD, 401);
-    const payload = { sub: user._id, createdAt: user.createdAt };
+    const payload: IJwtPayload = {
+      sub: user._id!,
+      expiresIn: new Date(parseInt(process.env.JWT_EXPIRES_IN + '')),
+    };
     return {
       accessToken: await this.jwtService.signAsync(payload, {
         secret: process.env.JWT_SECRET + '' || 'fdsafkjfkjdsafljwlkjfl',
-        expiresIn: parseInt(process.env.JWT_EXPIRES_IN + '') || '1h',
+        expiresIn: parseInt(process.env.JWT_EXPIRES_IN + '') || '3600',
       }),
       verified: user.verified,
     };
