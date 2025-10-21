@@ -1,6 +1,6 @@
 import {
   Controller,
-  Get,
+  Post,
   Request,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -16,7 +16,7 @@ export class UserController {
     private readonly jwtService: JwtService,
   ) {}
 
-  @Get('me')
+  @Post('me')
   async getByToken(@Request() req: Req) {
     const token = this.extractTokenFromHeader(req);
     if (!token) throw new UnauthorizedException(EError.TOKEN_INVALID);
@@ -25,7 +25,7 @@ export class UserController {
         secret: process.env.JWT_SECRET || 'fdsafkjfkjdsafljwlkjfl',
       });
       if (!payload.sub) throw new UnauthorizedException(EError.TOKEN_EXPIRED);
-      return this.userService.findById(payload.sub);
+      return await this.userService.findById(payload.sub);
     } catch (error) {
       throw new UnauthorizedException(EError.TOKEN_EXPIRED);
     }

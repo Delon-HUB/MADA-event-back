@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -9,7 +10,7 @@ import { AuthModule } from './modules/auth/auth.module';
     MongooseModule.forRoot(
       process.env.MONGO_URI || 'mongodb://localhost/MADA-event:270017',
     ),
-    AuthModule,
+    AuthModule,UserModule
   ],
 })
 export class AppModule {}
