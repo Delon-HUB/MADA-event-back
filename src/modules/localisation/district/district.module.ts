@@ -12,5 +12,6 @@ import { DistrictEntity, DistrictSchema } from './entities/district.entity';
   ],
   controllers: [DistrictController],
   providers: [DistrictService],
+  exports: [DistrictService],
 })
 export class DistrictModule {}

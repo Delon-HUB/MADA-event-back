@@ -12,8 +12,7 @@ export class DistrictService {
   ) {}
 
   async create(district: ICreateDistrictDto): Promise<ICreateDistrictDto> {
-    const isAlreadyCreated =
-      (await this.findByName(district.district)) != null;
+    const isAlreadyCreated = (await this.findByName(district.district)) != null;
     if (isAlreadyCreated)
       throw new HttpException('PROVINCE_ALREADY_EXIST', 400);
     const newDistrict = (

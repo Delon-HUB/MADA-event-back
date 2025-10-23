@@ -5,5 +5,5 @@ export interface ICreateRegionDto {
   _id?: string;
   region: string;
   provinceObj: ICreateProvinceDto;
-  districts?: ICreateDistrictDto[];
+  districts: ICreateDistrictDto[];
 }
