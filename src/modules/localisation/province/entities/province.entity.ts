@@ -4,8 +4,8 @@ import { SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ collection: 'provinces' })
 export class ProvinceEntity implements ICreateProvinceDto {
-  @Prop({ required: true })
-  provinceName: string;
+  @Prop({ required: true, lowercase: true,trim: true })
+  province: string;
 }
 
 export const ProvinceSchema = SchemaFactory.createForClass(ProvinceEntity);

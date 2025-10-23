@@ -4,11 +4,25 @@
     "regions": [
       {
         "region": "Analamanga",
-        "districts": []
+        "districts": [
+          "Ambohidratrimo",
+          "Andramasina",
+          "Anjozorobe",
+          "Ankazobe",
+          "Antananarivo Atsimondrano",
+          "Antananarivo Avaradrano",
+          "Manjakandriana",
+          "Antananarivo-I",
+          "Antananarivo-II",
+          "Antananarivo-III",
+          "Antananarivo-IV",
+          "Antananarivo-V",
+          "Antananarivo-VI"
+        ]
       },
       {
         "region": "Bongolava",
-        "districts": []
+        "districts": ["FENOARIVOBE", "TSIROANOMANDIDY"]
       },
       {
         "region": "Itasy",

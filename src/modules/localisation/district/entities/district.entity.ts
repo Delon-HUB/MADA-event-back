@@ -5,11 +5,11 @@ import type { ICreateRegionDto } from '../../region/dto/create-region.dto';
 
 @Schema({ collection: 'districts' })
 export class DistrictEntity implements ICreateDistrictDto {
-  @Prop({ required: true })
-  districtName: string;
+  @Prop({ required: true, toLowerCase: true, trim: true })
+  district: string;
 
   @Prop({ type: SchemaTypes.ObjectId, ref: 'regions' })
-  region: ICreateRegionDto;
+  regionObj: ICreateRegionDto;
 }
 
 export const DistrictSchema = SchemaFactory.createForClass(DistrictEntity);

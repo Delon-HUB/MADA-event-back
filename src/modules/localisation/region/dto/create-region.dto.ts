@@ -1,7 +1,9 @@
+import { ICreateDistrictDto } from '../../district/dto/create-district.dto';
 import { ICreateProvinceDto } from '../../province/dto/create-province.dto';
 
 export interface ICreateRegionDto {
   _id?: string;
-  regionName: string;
-  province: ICreateProvinceDto;
+  region: string;
+  provinceObj: ICreateProvinceDto;
+  districts?: ICreateDistrictDto[];
 }

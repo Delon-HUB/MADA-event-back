@@ -12,10 +12,10 @@ export class ProvinceService {
   ) {}
 
   async create(province: ICreateProvinceDto): Promise<ICreateProvinceDto> {
-    const isAlreadyCreated =
-      (await this.findByName(province.provinceName)) != null;
+    const isAlreadyCreated = (await this.findByName(province.province)) != null;
     if (isAlreadyCreated)
       throw new HttpException('PROVINCE_ALREADY_EXIST', 400);
+    province.province = province.province.toLocaleLowerCase();
     const newProvince = (
       await new this.provinceModel(province).save()
     ).toObject();
@@ -26,6 +26,8 @@ export class ProvinceService {
   }
 
   async findByName(provinceName: string): Promise<ProvinceEntity | null> {
-    return this.provinceModel.findOne({ provinceName: provinceName }).exec();
+    return this.provinceModel
+      .findOne({ province: provinceName.toLocaleLowerCase() })
+      .exec();
   }
 }
