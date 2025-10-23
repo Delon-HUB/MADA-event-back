@@ -1,0 +1,85 @@
+[
+  {
+    "province": "Antananarivo",
+    "regions": [
+      {
+        "region": "Analamanga",
+        "districts": []
+      },
+      {
+        "region": "Bongolava",
+        "districts": []
+      },
+      {
+        "region": "Itasy",
+        "districts": []
+      },
+      {
+        "region": "Vakinankaratra",
+        "districts": []
+      }
+    ]
+  },
+  {
+    "province": "Antsiranana",
+    "regions": [
+      {
+        "region": "Diana",
+        "districts": []
+      },
+      {
+        "region": "Sava",
+        "districts": []
+      }
+    ]
+  },
+  {
+    "province": "Fianarantsoa",
+    "regions": [
+      {
+        "region": "Amoron'i Mania",
+        "districts": []
+      },
+      {
+        "region": "Atsimo-Atsinanana",
+        "districts": []
+      },
+      {
+        "region": "Haute Matsiatra",
+        "districts": []
+      },
+      {
+        "region": "Ihorombe",
+        "districts": []
+      },
+      {
+        "region": "Vatovavy",
+        "districts": []
+      },
+      {
+        "region": "Fitovinany",
+        "districts": []
+      },
+      {
+        "region": "Ihorombe",
+        "districts": []
+      },
+      {
+        "region": "Ihorombe",
+        "districts": []
+      }
+    ]
+  },
+  {
+    "province": "Mahajanga",
+    "regions": []
+  },
+  {
+    "province": "Toamasina",
+    "regions": []
+  },
+  {
+    "province": "Toliara",
+    "regions": []
+  }
+]
