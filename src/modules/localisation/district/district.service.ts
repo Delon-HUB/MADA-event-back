@@ -14,17 +14,18 @@ export class DistrictService {
   async create(district: ICreateDistrictDto): Promise<ICreateDistrictDto> {
     const isAlreadyCreated = (await this.findByName(district.district)) != null;
     if (isAlreadyCreated)
-      throw new HttpException('PROVINCE_ALREADY_EXIST', 400);
-    const newDistrict = (
-      await new this.districtModel(district).save()
-    ).toObject();
+      throw new HttpException('DISTRICT_ALREADY_EXIST', 400);
+    const created = await this.districtModel.create(district);
     return {
-      ...newDistrict,
-      _id: newDistrict._id.toString(),
+      ...created,
+      regionId: created._id.toString(),
+      _id: created._id.toString(),
     };
   }
 
   async findByName(districtName: string): Promise<DistrictEntity | null> {
-    return this.districtModel.findOne({ regionName: districtName }).exec();
+    return await this.districtModel
+      .findOne({ regionName: districtName })
+      .exec();
   }
 }

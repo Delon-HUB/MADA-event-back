@@ -15,21 +15,18 @@ export class RegionService {
 
   async create(region: ICreateRegionDto): Promise<ICreateRegionDto> {
     const isAlreadyCreated = (await this.findByName(region.region)) != null;
-    if (isAlreadyCreated)
-      throw new HttpException('PROVINCE_ALREADY_EXIST', 400);
-    (await new this.regionModel(region).save()).toObject();
-
-    region.districts?.forEach(async (district) => {
-      await this.districtService.create(district);
-    });
-
-    const newRegionCreated = await this.findByName(region.region.toLowerCase());
-    console.log(newRegionCreated);
-    return newRegionCreated!;
+    if (isAlreadyCreated) throw new HttpException('REGION_ALREADY_EXIST', 400);
+    const created = await this.regionModel.create(region);
+    return {
+      ...created,
+      provinceId: created.provinceId.toString(),
+      districtIds: created.districtIds.map((district) => district.toString()),
+      _id: created._id.toString(),
+    };
   }
 
   async findByName(regionName: string): Promise<RegionEntity | null> {
-    return this.regionModel
+    return await this.regionModel
       .findOne({ region: regionName })
       .populate(['provinceObj', 'districts'])
       .exec();

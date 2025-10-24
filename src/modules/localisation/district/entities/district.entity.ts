@@ -1,15 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ICreateDistrictDto } from '../dto/create-district.dto';
-import { SchemaTypes } from 'mongoose';
-import type { ICreateRegionDto } from '../../region/dto/create-region.dto';
+import { type ObjectId, SchemaTypes } from 'mongoose';
 
 @Schema({ collection: 'districts' })
-export class DistrictEntity implements ICreateDistrictDto {
+export class DistrictEntity {
   @Prop({ required: true, toLowerCase: true, trim: true })
   district: string;
 
-  @Prop({ type: SchemaTypes.ObjectId, ref: 'regions' })
-  regionObj: ICreateRegionDto;
+  @Prop({ type: SchemaTypes.ObjectId, ref: 'regions', required: true })
+  regionId: ObjectId;
 }
 
 export const DistrictSchema = SchemaFactory.createForClass(DistrictEntity);

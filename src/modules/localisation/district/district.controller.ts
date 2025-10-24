@@ -3,5 +3,9 @@ import { DistrictService } from './district.service';
 
 @Controller('district')
 export class DistrictController {
-  constructor(private readonly districtService: DistrictService) {}
+  constructor(private readonly districtService: DistrictService) {
+    // province
+    // region
+    // district
+  }
 }
