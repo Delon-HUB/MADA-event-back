@@ -30,9 +30,4 @@ export class ProvinceController {
     });
     return provincesCreated;
   }
-
-  @Get()
-  async getAll() {
-    return await this.provinceService.findAll();
-  }
 }

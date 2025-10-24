@@ -28,4 +28,11 @@ export class DistrictService {
       .findOne({ regionName: districtName })
       .exec();
   }
+
+  async findAll() {
+    return await this.districtModel
+      .find()
+      .populate({ path: 'regionId', populate: { path: 'provinceId' } })
+      .exec();
+  }
 }

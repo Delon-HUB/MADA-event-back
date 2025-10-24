@@ -28,16 +28,4 @@ export class ProvinceService {
       .findOne({ province: provinceName.toLocaleLowerCase() })
       .exec();
   }
-
-  async findAll(): Promise<ProvinceEntity[] | null> {
-    return await this.provinceModel
-      .find()
-      .populate({
-        path: 'regionIds',
-        populate: {
-          path: 'districtIds',
-        },
-      })
-      .exec();
-  }
 }
