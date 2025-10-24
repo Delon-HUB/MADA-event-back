@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { ProvinceEntity } from './entities/province.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { ICreateProvinceDto } from './dto/create-province.dto';
 
 @Injectable()
@@ -18,9 +18,16 @@ export class ProvinceService {
     const created = await this.provinceModel.create(province);
     return {
       ...created,
-      regionIds: created.regionIds.map((regionId) => String(regionId)),
+      regionIds: created.regionIds?.map((regionId) => String(regionId)),
       _id: created._id.toString(),
     };
+  }
+
+  async addNewRegion(id: string, districtId: ObjectId) {
+    const province = await this.provinceModel.findById(id);
+    if (!province) throw new HttpException('REGION_NOT_FOUND', 404);
+    province.regionIds.push(districtId);
+    return province.save();
   }
 
   async findByName(provinceName: string): Promise<ProvinceEntity | null> {
