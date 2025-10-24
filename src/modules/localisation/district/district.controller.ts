@@ -1,11 +1,11 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 import { DistrictService } from './district.service';
 
-@Controller('district')
+@Controller('localisation/district')
 export class DistrictController {
   constructor(private readonly districtService: DistrictService) {}
 
-  @Get()
+  @Post()
   async getAll() {
     return await this.districtService.findAll();
   }
