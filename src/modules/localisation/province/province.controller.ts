@@ -12,10 +12,6 @@ export class ProvinceController {
     private readonly districtService: DistrictService,
   ) {}
 
-  @Get()
-  test() {
-    return 'hello';
-  }
   @Post('insert-many')
   async insertMany(@Body() provinces: ICreateProvinceDto[]) {
     const provincesCreated = await provinces.map(async (province) => {
@@ -33,5 +29,10 @@ export class ProvinceController {
       });
     });
     return provincesCreated;
+  }
+
+  @Get()
+  async getAll() {
+    return await this.provinceService.findAll();
   }
 }

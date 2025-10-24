@@ -3,6 +3,7 @@ import { ProvinceEntity } from './entities/province.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { ICreateProvinceDto } from './dto/create-province.dto';
+import { ICreateRegionDto } from '../region/dto/create-region.dto';
 
 @Injectable()
 export class ProvinceService {
@@ -26,15 +27,25 @@ export class ProvinceService {
   async addNewRegion(id: string, districtId: ObjectId) {
     const province = await this.provinceModel.findById(id);
     if (!province) throw new HttpException('REGION_NOT_FOUND', 404);
-    province.regionIds.push(districtId);
+    province.regionIds.push();
     return province.save();
   }
 
   async findByName(provinceName: string): Promise<ProvinceEntity | null> {
     return await this.provinceModel
       .findOne({ province: provinceName.toLocaleLowerCase() })
-      .populate('regions')
-      .populate('districts')
+      .exec();
+  }
+
+  async findAll(): Promise<ProvinceEntity[] | null> {
+    return await this.provinceModel
+      .find()
+      .populate({
+        path: 'regionIds',
+        populate: {
+          path: 'districtIds',
+        },
+      })
       .exec();
   }
 }

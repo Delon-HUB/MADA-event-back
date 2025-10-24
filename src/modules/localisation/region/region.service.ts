@@ -31,7 +31,7 @@ export class RegionService {
   async addNewDistrict(id: string, districtId: ObjectId) {
     const region = await this.regionModel.findById(id);
     if (!region) throw new HttpException('REGION_NOT_FOUND', 404);
-    region.districtIds.push(districtId);
+    // region.districtIds.push();
     return region.save();
   }
 
