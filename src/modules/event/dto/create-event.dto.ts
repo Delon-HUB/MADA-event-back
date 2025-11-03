@@ -1,10 +1,11 @@
 import { ICreateUserDto } from '../../user/dto/create-user.dto';
 
-export class ICreateEventDto extends Document {
+export class ICreateEventDto {
   _id?: string;
   title: string;
   description?: string;
   category: string;
+  location: string;
   photo?: string;
   startDate: Date;
   endDate: Date;
@@ -13,6 +14,6 @@ export class ICreateEventDto extends Document {
   ticketsAvailable: number;
   participants: ICreateUserDto[];
   owner: ICreateUserDto;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
