@@ -22,9 +22,7 @@ export class EventController {
         destination: './public/event',
         filename: (req, file, cb) => {
           const filename =
-            'event-' +
-            new Date(Date.now()).toISOString() +
-            `.${file.mimetype.split('/')[1]}`;
+            'event-' + Date.now() + `.${file.mimetype.split('/')[1]}`;
           cb(null, filename);
         },
       }),
