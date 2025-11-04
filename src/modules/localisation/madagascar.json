@@ -1,0 +1,99 @@
+[
+  {
+    "province": "Antananarivo",
+    "regions": [
+      {
+        "region": "Analamanga",
+        "districts": [
+          "Ambohidratrimo",
+          "Andramasina",
+          "Anjozorobe",
+          "Ankazobe",
+          "Antananarivo Atsimondrano",
+          "Antananarivo Avaradrano",
+          "Manjakandriana",
+          "Antananarivo-I",
+          "Antananarivo-II",
+          "Antananarivo-III",
+          "Antananarivo-IV",
+          "Antananarivo-V",
+          "Antananarivo-VI"
+        ]
+      },
+      {
+        "region": "Bongolava",
+        "districts": ["FENOARIVOBE", "TSIROANOMANDIDY"]
+      },
+      {
+        "region": "Itasy",
+        "districts": []
+      },
+      {
+        "region": "Vakinankaratra",
+        "districts": []
+      }
+    ]
+  },
+  {
+    "province": "Antsiranana",
+    "regions": [
+      {
+        "region": "Diana",
+        "districts": []
+      },
+      {
+        "region": "Sava",
+        "districts": []
+      }
+    ]
+  },
+  {
+    "province": "Fianarantsoa",
+    "regions": [
+      {
+        "region": "Amoron'i Mania",
+        "districts": []
+      },
+      {
+        "region": "Atsimo-Atsinanana",
+        "districts": []
+      },
+      {
+        "region": "Haute Matsiatra",
+        "districts": []
+      },
+      {
+        "region": "Ihorombe",
+        "districts": []
+      },
+      {
+        "region": "Vatovavy",
+        "districts": []
+      },
+      {
+        "region": "Fitovinany",
+        "districts": []
+      },
+      {
+        "region": "Ihorombe",
+        "districts": []
+      },
+      {
+        "region": "Ihorombe",
+        "districts": []
+      }
+    ]
+  },
+  {
+    "province": "Mahajanga",
+    "regions": []
+  },
+  {
+    "province": "Toamasina",
+    "regions": []
+  },
+  {
+    "province": "Toliara",
+    "regions": []
+  }
+]
