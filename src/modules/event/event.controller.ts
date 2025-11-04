@@ -143,4 +143,9 @@ export class EventController {
   sayHello() {
     return 'hello';
   }
+
+  private extractTokenFromHeader(request: Req): string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
+  }
 }
