@@ -73,4 +73,8 @@ export class EventService {
     await this.eventModel.findByIdAndUpdate(id, updateEventDto).lean().exec();
     return this.findById(id);
   }
+
+  async findOne(id: string) {
+    return this.eventModel.findById(id).populate({ path: 'ownerId' }).exec();
+  }
 }
