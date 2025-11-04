@@ -10,10 +10,15 @@ import { EventService } from './event.service';
 import { FileInterceptor, MulterModule } from '@nestjs/platform-express';
 import { ICreateEventDto } from './dto/create-event.dto';
 import { diskStorage } from 'multer';
+import { EventGateway } from './event.gateway';
+import { ERole } from '../../Enums/ERole';
 
 @Controller('event')
 export class EventController {
-  constructor(private readonly eventService: EventService) {}
+  constructor(
+    private readonly eventService: EventService,
+    private readonly eventGateway: EventGateway,
+  ) {}
 
   @Post()
   @UseInterceptors(
@@ -32,8 +37,10 @@ export class EventController {
     @UploadedFile() img: Express.Multer.File,
     @Body() data: ICreateEventDto,
   ) {
-    console.log(img);
-    console.log(data.title);
+    data.photo = img.path;
+    const newEvent = await this.eventService.create(data);
+    this.eventGateway.newEventCreated(newEvent);
+    return newEvent;
   }
 
   @Get()
