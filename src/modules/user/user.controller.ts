@@ -21,7 +21,7 @@ export class UserController {
     const token = this.extractTokenFromHeader(req);
     if (!token) throw new UnauthorizedException(EError.TOKEN_INVALID);
     try {
-      const payload = this.jwtService.verify(token, {
+      const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET || 'fdsafkjfkjdsafljwlkjfl',
       });
       if (!payload.sub) throw new UnauthorizedException(EError.TOKEN_EXPIRED);
