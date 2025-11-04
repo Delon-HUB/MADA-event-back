@@ -6,6 +6,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { ICreateEventDto } from './dto/create-event.dto';
 
 @WebSocketGateway({
   cors: {
@@ -24,7 +25,12 @@ export class EventGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`${client.id} is connected`);
   }
+
   handleDisconnect(client: Socket) {
     this.logger.log(`${client.id} is disconnected`);
+  }
+
+  newEventCreated(event: ICreateEventDto) {
+    this.server.emit('newEvent', event);
   }
 }
