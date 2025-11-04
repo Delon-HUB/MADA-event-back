@@ -7,6 +7,8 @@ import { DistrictModule } from './modules/localisation/district/district.module'
 import { RegionModule } from './modules/localisation/region/region.module';
 import { ProvinceModule } from './modules/localisation/province/province.module';
 import { EventModule } from './modules/event/event.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -14,6 +16,10 @@ import { EventModule } from './modules/event/event.module';
     MongooseModule.forRoot(
       process.env.MONGO_URI || 'mongodb://localhost/MADA-event:270017',
     ),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+      serveRoot: '/public',
+    }),
     AuthModule,
     UserModule,
     ProvinceModule,
