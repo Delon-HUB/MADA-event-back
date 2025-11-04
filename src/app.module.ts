@@ -6,6 +6,7 @@ import { UserModule } from './modules/user/user.module';
 import { DistrictModule } from './modules/localisation/district/district.module';
 import { RegionModule } from './modules/localisation/region/region.module';
 import { ProvinceModule } from './modules/localisation/province/province.module';
+import { EventModule } from './modules/event/event.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ProvinceModule } from './modules/localisation/province/province.module'
     ProvinceModule,
     RegionModule,
     DistrictModule,
+    EventModule,
   ],
 })
 export class AppModule {}
