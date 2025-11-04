@@ -11,7 +11,7 @@ export class ICreateEventDto {
   endDate: Date;
   price: number;
   capacity?: number;
-  ticketsAvailable: number;
+  ticketsAvailable?: number;
   participants: ICreateUserDto[];
   owner: ICreateUserDto;
   createdAt?: Date;
