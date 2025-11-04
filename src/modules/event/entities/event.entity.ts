@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import type { ICreateUserDto } from '../../user/dto/create-user.dto';
-import { SchemaTypes } from 'mongoose';
+import { type ObjectId, SchemaTypes } from 'mongoose';
 
 @Schema({ timestamps: true, collection: 'events' })
 export class EventEntity {
@@ -34,11 +33,8 @@ export class EventEntity {
   @Prop()
   ticketsAvailable?: number;
 
-  @Prop({ type: [{ type: SchemaTypes.ObjectId, ref: 'users' }] })
-  participants: ICreateUserDto[];
-
   @Prop({ required: true, type: SchemaTypes.ObjectId, ref: 'users' })
-  owner: ICreateUserDto;
+  ownerId: ObjectId;
 
   @Prop({ required: true, default: new Date(Date.now()) })
   createdAt: Date;
