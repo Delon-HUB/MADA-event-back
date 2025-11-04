@@ -49,16 +49,15 @@ export class EventController {
       const payload = this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET || 'fdsafkjfkjdsafljwlkjfl',
       });
-      console.log(payload);
       if (!payload.sub) throw new UnauthorizedException(EError.TOKEN_EXPIRED);
 
-      data.owner = payload.sub;
-      data.photo = img.path;
+      data.ownerId = payload.sub;
+      if (img) data.photo = img.path;
       const newEvent = await this.eventService.create(data);
       this.eventGateway.newEventCreated(newEvent);
       return newEvent;
     } catch (error) {
-      throw new UnauthorizedException(EError.TOKEN_EXPIRED);
+      console.error(error);
     }
   }
 

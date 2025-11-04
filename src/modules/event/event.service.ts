@@ -16,10 +16,15 @@ export class EventService {
     return {
       ...newEvent,
       _id: newEvent._id.toString(),
+      ownerId: newEvent.ownerId.toString(),
     };
   }
 
   findAll() {
     return `This action returns all event`;
+  }
+
+  async findOne(id: string) {
+    return this.eventModel.findById(id).populate({ path: 'ownerId' }).exec();
   }
 }
