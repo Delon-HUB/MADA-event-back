@@ -61,9 +61,9 @@ export class EventController {
     }
   }
 
-  @Get()
-  findAll() {
-    return this.eventService.findAll();
+  @Post('all')
+  async findAll() {
+    return await this.eventService.findAll();
   }
 
   private extractTokenFromHeader(request: Req): string | undefined {

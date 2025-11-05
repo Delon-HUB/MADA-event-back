@@ -20,8 +20,17 @@ export class EventService {
     };
   }
 
-  findAll() {
-    return `This action returns all event`;
+  async findAll(): Promise<ICreateEventDto[]> {
+    const eventsEntities = await this.eventModel.find().exec();
+    const events: ICreateEventDto[] = eventsEntities.map((ev) => {
+      const event = ev.toObject();
+      return {
+        ...event,
+        _id: event._id.toString(),
+        ownerId: event.ownerId.toString(),
+      };
+    });
+    return events;
   }
 
   async findOne(id: string) {
