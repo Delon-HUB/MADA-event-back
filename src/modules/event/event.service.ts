@@ -77,4 +77,21 @@ export class EventService {
   async findOne(id: string) {
     return this.eventModel.findById(id).populate({ path: 'ownerId' }).exec();
   }
+
+  async findByUserId(userId: string): Promise<ICreateEventDto[]> {
+    const objectIdOwner = new Types.ObjectId(userId);
+
+    const eventsEntities = await this.eventModel
+      .find({ ownerId: objectIdOwner })
+      .exec();
+    const events: ICreateEventDto[] = eventsEntities.map((ev) => {
+      const event = ev.toObject();
+      return {
+        ...event,
+        _id: event._id.toString(),
+        ownerId: event.ownerId.toString(),
+      };
+    });
+    return events;
+  }
 }
