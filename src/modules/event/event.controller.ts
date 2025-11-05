@@ -66,6 +66,21 @@ export class EventController {
     return await this.eventService.findAll();
   }
 
+  @Post('/mine')
+  async getByUserId(@Request() req: Req) {
+    const token = this.extractTokenFromHeader(req);
+    if (!token) throw new UnauthorizedException(EError.TOKEN_INVALID);
+    try {
+      const payload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET || 'fdsafkjfkjdsafljwlkjfl',
+      });
+      if (!payload.sub) throw new UnauthorizedException(EError.TOKEN_EXPIRED);
+      return await this.eventService.findByUserId(payload.sub);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   private extractTokenFromHeader(request: Req): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;

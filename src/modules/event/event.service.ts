@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ICreateEventDto } from './dto/create-event.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { EventEntity } from './entities/event.entity';
 
 @Injectable()
@@ -35,5 +35,22 @@ export class EventService {
 
   async findOne(id: string) {
     return this.eventModel.findById(id).populate({ path: 'ownerId' }).exec();
+  }
+
+  async findByUserId(userId: string): Promise<ICreateEventDto[]> {
+    const objectIdOwner = new Types.ObjectId(userId);
+
+    const eventsEntities = await this.eventModel
+      .find({ ownerId: objectIdOwner })
+      .exec();
+    const events: ICreateEventDto[] = eventsEntities.map((ev) => {
+      const event = ev.toObject();
+      return {
+        ...event,
+        _id: event._id.toString(),
+        ownerId: event.ownerId.toString(),
+      };
+    });
+    return events;
   }
 }
