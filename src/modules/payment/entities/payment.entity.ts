@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { type ObjectId, SchemaTypes } from 'mongoose';
+import { type ICreateUserDto } from '../../user/dto/create-user.dto';
 
 @Schema({ timestamps: true, collection: 'payments' })
 export class PaymentEntity {
@@ -7,7 +8,7 @@ export class PaymentEntity {
   eventId: ObjectId;
 
   @Prop({ required: true, type: SchemaTypes.ObjectId, ref: 'users' })
-  userId: ObjectId;
+  userId: ICreateUserDto;
 
   @Prop({ required: true })
   amount: number;
