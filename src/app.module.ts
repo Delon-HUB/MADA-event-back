@@ -10,6 +10,7 @@ import { EventModule } from './modules/event/event.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { PaymentModule } from './modules/payment/payment.module';
+import { TicketModule } from './modules/ticket/ticket.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { PaymentModule } from './modules/payment/payment.module';
     DistrictModule,
     EventModule,
     PaymentModule,
+    TicketModule,
   ],
 })
 export class AppModule {}

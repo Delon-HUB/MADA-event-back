@@ -11,6 +11,9 @@ import { MailService } from '../mail/mail.service';
 import { UserModule } from '../user/user.module';
 import { EventEntity, EventSchema } from '../event/entities/event.entity';
 import { UserSchema } from '../user/entities/user.entity';
+import { TicketModule } from '../ticket/ticket.module';
+import { TicketService } from '../ticket/ticket.service';
+import { TicketEntity, TicketSchema } from '../ticket/entities/ticket.entity';
 
 @Module({
   imports: [
@@ -18,13 +21,16 @@ import { UserSchema } from '../user/entities/user.entity';
       { name: PaymentEntity.name, schema: PaymentSchema },
       { name: EventEntity.name, schema: EventSchema },
       { name: 'users', schema: UserSchema },
+      { name: TicketEntity.name, schema: TicketSchema },
     ]),
+    TicketModule,
     JwtModule,
     EventModule,
     MailModule,
     UserModule,
+    TicketModule,
   ],
   controllers: [PaymentController],
-  providers: [PaymentService, EventService, MailService],
+  providers: [PaymentService, EventService, MailService, TicketService],
 })
 export class PaymentModule {}
