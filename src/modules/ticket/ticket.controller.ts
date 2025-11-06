@@ -1,18 +1,48 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Request,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { TicketService } from './ticket.service';
 import { type ICreateTicketDto } from './dto/create-ticket.dto';
+import { type Request as Req } from 'express';
+import { EError } from '../../Enums/EError';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('ticket')
 export class TicketController {
-  constructor(private readonly ticketService: TicketService) {}
+  constructor(
+    private readonly ticketService: TicketService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @Post()
-  create(@Body() createTicketDto: ICreateTicketDto) {
-    return this.ticketService.create(createTicketDto);
+  async create(@Body() createTicketDto: ICreateTicketDto) {
+    return await this.ticketService.create(createTicketDto);
   }
 
-  @Get()
-  findAll() {
-    return this.ticketService.findAll();
+  @Post('mine')
+  async finByUserId(@Request() req: Req) {
+    const token = this.extractTokenFromHeader(req);
+    if (!token) throw new UnauthorizedException(EError.TOKEN_INVALID);
+    try {
+      const payload = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET || 'fdsafkjfkjdsafljwlkjfl',
+      });
+      if (!payload.sub) throw new UnauthorizedException(EError.TOKEN_EXPIRED);
+
+      const userId = payload.sub;
+      const tickets = await this.ticketService.findByUserId(userId);
+      return tickets;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  private extractTokenFromHeader(request: Req): string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
   }
 }
