@@ -14,6 +14,9 @@ import { JwtService } from '@nestjs/jwt';
 import { EventService } from '../event/event.service';
 import * as qrcode from 'qrcode';
 import { MailService } from '../mail/mail.service';
+import { join } from 'path';
+import { TicketService } from '../ticket/ticket.service';
+import { ICreateTicketDto } from '../ticket/dto/create-ticket.dto';
 
 @Controller('payment')
 export class PaymentController {
@@ -22,6 +25,7 @@ export class PaymentController {
     private readonly paymentService: PaymentService,
     private readonly eventService: EventService,
     private readonly mailService: MailService,
+    private readonly ticketService: TicketService,
   ) {}
 
   @Post()
@@ -34,18 +38,28 @@ export class PaymentController {
       });
       if (!payload.sub) throw new UnauthorizedException(EError.TOKEN_EXPIRED);
 
-      const event = await this.eventService.findOne(data.eventId);
+      const event = await this.eventService.findOne(data.eventId!);
       if (!event) throw new NotFoundException('EVENT_NOT_FOUND');
-
       data.userId = payload.sub;
-      const newPayment = await this.paymentService.create(data);
-      const ticketPaid = await this.paymentService.findById(
-        newPayment._id!.toString(),
-      );
 
-      const qr = await qrcode.toDataURL(newPayment._id!);
-      this.mailService.sendQRCode(ticketPaid!.userId.email, event.title, qr);
-      return newPayment;
+      let path = join(__dirname, '..', '..', '..', 'public/', 'qrcode/');
+      path += 'ticket-' + Date.now() + '.png';
+      await qrcode.toFile(path, event._id.toString());
+
+      // create ticket
+      const ticket: ICreateTicketDto = {
+        userId: data.userId,
+        eventId: event._id.toString(),
+        price: event.price,
+        paymentStatus: 'PAID',
+        qrCodeUrl: path,
+      };
+      const ticketCreated = await this.ticketService.create(ticket);
+
+      // create payment
+      data.ticketId = ticketCreated._id;
+      await this.paymentService.create(data);
+      return ticketCreated;
     } catch (error) {
       console.error(error);
     }
