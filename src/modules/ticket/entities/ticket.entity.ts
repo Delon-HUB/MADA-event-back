@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { ICreateEventDto } from '../../event/dto/create-event.dto';
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, collection: 'tickets' })
 export class TicketEntity {
   @Prop({ type: Types.ObjectId, ref: 'users', required: true })
   userId: Types.ObjectId;

@@ -42,9 +42,11 @@ export class PaymentController {
       if (!event) throw new NotFoundException('EVENT_NOT_FOUND');
       data.userId = payload.sub;
 
+      // qrcode
       let path = join(__dirname, '..', '..', '..', 'public/', 'qrcode/');
-      path += 'ticket-' + Date.now() + '.png';
-      await qrcode.toFile(path, event._id.toString());
+      const rootPath = join(__dirname, '..', '..', '..', 'public/', 'qrcode/');
+      const fileName = 'ticket-' + Date.now() + '.png';
+      await qrcode.toFile(rootPath + fileName, event._id.toString());
 
       // create ticket
       const ticket: ICreateTicketDto = {
@@ -52,7 +54,7 @@ export class PaymentController {
         eventId: event._id.toString(),
         price: event.price,
         paymentStatus: 'PAID',
-        qrCodeUrl: path,
+        qrCodeUrl: 'public/qrcode/' + fileName,
       };
       const ticketCreated = await this.ticketService.create(ticket);
 
