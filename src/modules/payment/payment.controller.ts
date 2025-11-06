@@ -4,18 +4,24 @@ import {
   Body,
   UnauthorizedException,
   Request,
+  NotFoundException,
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { type ICreatePaymentDto } from './dto/create-payment.dto';
 import { EError } from '../../Enums/EError';
 import type { Request as Req } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { EventService } from '../event/event.service';
+import * as qrcode from 'qrcode';
+import { MailService } from '../mail/mail.service';
 
 @Controller('payment')
 export class PaymentController {
   constructor(
     private readonly jwtService: JwtService,
     private readonly paymentService: PaymentService,
+    private readonly eventService: EventService,
+    private readonly mailService: MailService,
   ) {}
 
   @Post()
@@ -28,9 +34,17 @@ export class PaymentController {
       });
       if (!payload.sub) throw new UnauthorizedException(EError.TOKEN_EXPIRED);
 
+      const event = await this.eventService.findOne(data.eventId);
+      if (!event) throw new NotFoundException('EVENT_NOT_FOUND');
+
       data.userId = payload.sub;
       const newPayment = await this.paymentService.create(data);
-      // this.eventGateway.newEventCreated(newEvent);
+      const ticketPaid = await this.paymentService.findById(
+        newPayment._id!.toString(),
+      );
+
+      const qr = await qrcode.toDataURL(newPayment._id!);
+      this.mailService.sendQRCode(ticketPaid!.userId.email, event.title, qr);
       return newPayment;
     } catch (error) {
       console.error(error);
