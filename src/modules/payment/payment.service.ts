@@ -14,16 +14,25 @@ export class PaymentService {
   async create(
     createPaymentDto: ICreatePaymentDto,
   ): Promise<ICreatePaymentDto> {
-    // get event by id
+    createPaymentDto.status = 'PAID';
     const newPayment = (
       await this.paymentModel.create(createPaymentDto)
     ).toObject();
-    newPayment.status = 'paid';
-    return {
+
+    const created = {
       ...newPayment,
       _id: newPayment._id.toString(),
       eventId: newPayment.eventId.toString(),
       userId: newPayment.userId.toString(),
-    };
+    } as ICreatePaymentDto;
+
+    return created;
+  }
+
+  async findById(id: string) {
+    return await this.paymentModel
+      .findById(id)
+      .populate({ path: 'userId' })
+      .exec();
   }
 }
