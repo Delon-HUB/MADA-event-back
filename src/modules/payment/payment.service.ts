@@ -11,22 +11,13 @@ export class PaymentService {
     private readonly paymentModel: Model<PaymentEntity>,
   ) {}
 
-  async create(
-    createPaymentDto: ICreatePaymentDto,
-  ): Promise<ICreatePaymentDto> {
+  async create(createPaymentDto: ICreatePaymentDto) {
     createPaymentDto.status = 'PAID';
     const newPayment = (
       await this.paymentModel.create(createPaymentDto)
     ).toObject();
 
-    const created = {
-      ...newPayment,
-      _id: newPayment._id.toString(),
-      eventId: newPayment.eventId.toString(),
-      userId: newPayment.userId.toString(),
-    } as ICreatePaymentDto;
-
-    return created;
+    return newPayment;
   }
 
   async findById(id: string) {

@@ -1,6 +1,7 @@
 export interface ICreatePaymentDto {
   _id?: string;
-  eventId: string;
+  ticketId?: string;
+  eventId?: string;
   userId: string;
   amount: number;
   method: string;

@@ -5,7 +5,7 @@ import { type ICreateUserDto } from '../../user/dto/create-user.dto';
 @Schema({ timestamps: true, collection: 'payments' })
 export class PaymentEntity {
   @Prop({ required: true, type: SchemaTypes.ObjectId, ref: 'events' })
-  eventId: ObjectId;
+  ticketId: ObjectId;
 
   @Prop({ required: true, type: SchemaTypes.ObjectId, ref: 'users' })
   userId: ICreateUserDto;
