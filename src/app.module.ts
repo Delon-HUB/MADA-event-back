@@ -9,6 +9,7 @@ import { ProvinceModule } from './modules/localisation/province/province.module'
 import { EventModule } from './modules/event/event.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { PaymentModule } from './modules/payment/payment.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { join } from 'path';
     RegionModule,
     DistrictModule,
     EventModule,
+    PaymentModule,
   ],
 })
 export class AppModule {}
