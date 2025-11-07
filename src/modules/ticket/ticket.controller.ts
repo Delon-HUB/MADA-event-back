@@ -44,9 +44,7 @@ export class TicketController {
 
   @Post('event')
   async findTicketForEvent(@Body('eventId') eventId: string) {
-    console.log(eventId);
     const result = await this.ticketService.findByEventId(eventId);
-    console.log((result[0].userId as ICreateUserDto).email);
     return result;
   }
 
