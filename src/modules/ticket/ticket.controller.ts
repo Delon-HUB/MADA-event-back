@@ -10,6 +10,7 @@ import { type ICreateTicketDto } from './dto/create-ticket.dto';
 import { type Request as Req } from 'express';
 import { EError } from '../../Enums/EError';
 import { JwtService } from '@nestjs/jwt';
+import { ICreateUserDto } from '../user/dto/create-user.dto';
 
 @Controller('ticket')
 export class TicketController {
@@ -39,6 +40,14 @@ export class TicketController {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  @Post('event')
+  async findTicketForEvent(@Body('eventId') eventId: string) {
+    console.log(eventId);
+    const result = await this.ticketService.findByEventId(eventId);
+    console.log((result[0].userId as ICreateUserDto).email);
+    return result;
   }
 
   private extractTokenFromHeader(request: Req): string | undefined {

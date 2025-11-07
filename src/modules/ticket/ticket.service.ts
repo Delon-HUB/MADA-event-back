@@ -41,4 +41,20 @@ export class TicketService {
     });
     return tickets;
   }
+
+  async findByEventId(eventId: string) {
+    const ticketEntities = await this.ticketModel
+      .find({ eventId: eventId })
+      .populate({ path: 'userId' })
+      .exec();
+
+    const tickets: ICreateTicketDto[] = ticketEntities.map((t) => {
+      const ticket = t.toObject();
+      return {
+        ...ticket,
+        _id: ticket._id.toString(),
+      };
+    });
+    return tickets;
+  }
 }
