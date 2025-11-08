@@ -10,7 +10,6 @@ import { type ICreateTicketDto } from './dto/create-ticket.dto';
 import { type Request as Req } from 'express';
 import { EError } from '../../Enums/EError';
 import { JwtService } from '@nestjs/jwt';
-import { ICreateUserDto } from '../user/dto/create-user.dto';
 
 @Controller('ticket')
 export class TicketController {
