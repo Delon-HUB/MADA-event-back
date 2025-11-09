@@ -79,13 +79,13 @@ export class MailService {
             <p>Si vous n'avez pas demandé ce code, vous pouvez ignorer cet e-mail.</p>
             <p>Merci,<br />L'équipe Support</p>
 
-            <div class="footer">© 2025 e-resaka. Tous droits réservés.</div>
+            <div class="footer">© 2025 MADA-event. Tous droits réservés.</div>
             </div>
         </body>
         </html>`;
 
     const info = this.transporter.sendMail({
-      from: { name: 'e-resaka', address: process.env.EMAIL_FROM + '' },
+      from: { name: 'MADA-event', address: process.env.EMAIL_FROM + '' },
       to,
       subject: "Code de vérification d'identité",
       html: message,
