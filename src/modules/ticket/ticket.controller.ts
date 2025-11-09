@@ -20,7 +20,8 @@ export class TicketController {
 
   @Post()
   async create(@Body() createTicketDto: ICreateTicketDto) {
-    return await this.ticketService.create(createTicketDto);
+    const ticket = await this.ticketService.create(createTicketDto);
+    return ticket;
   }
 
   @Post('mine')

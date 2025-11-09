@@ -14,6 +14,7 @@ import { UserSchema } from '../user/entities/user.entity';
 import { TicketModule } from '../ticket/ticket.module';
 import { TicketService } from '../ticket/ticket.service';
 import { TicketEntity, TicketSchema } from '../ticket/entities/ticket.entity';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
   imports: [
@@ -29,8 +30,10 @@ import { TicketEntity, TicketSchema } from '../ticket/entities/ticket.entity';
     MailModule,
     UserModule,
     TicketModule,
+    NotificationModule,
   ],
   controllers: [PaymentController],
   providers: [PaymentService, EventService, MailService, TicketService],
+  exports: [MongooseModule],
 })
 export class PaymentModule {}

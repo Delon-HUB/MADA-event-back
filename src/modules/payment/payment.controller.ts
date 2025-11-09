@@ -17,6 +17,7 @@ import { MailService } from '../mail/mail.service';
 import { join } from 'path';
 import { TicketService } from '../ticket/ticket.service';
 import { ICreateTicketDto } from '../ticket/dto/create-ticket.dto';
+import { NotificationGateway } from '../notification/notification.gateway';
 
 @Controller('payment')
 export class PaymentController {
@@ -26,6 +27,7 @@ export class PaymentController {
     private readonly eventService: EventService,
     private readonly mailService: MailService,
     private readonly ticketService: TicketService,
+    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   @Post()
@@ -43,15 +45,14 @@ export class PaymentController {
       data.userId = payload.sub;
 
       // qrcode
-      let path = join(__dirname, '..', '..', '..', 'public/', 'qrcode/');
       const rootPath = join(__dirname, '..', '..', '..', 'public/', 'qrcode/');
       const fileName = 'ticket-' + Date.now() + '.png';
-      await qrcode.toFile(rootPath + fileName, event._id.toString());
+      await qrcode.toFile(rootPath + fileName, event._id!.toString());
 
       // create ticket
       const ticket: ICreateTicketDto = {
         userId: data.userId,
-        eventId: event._id.toString(),
+        eventId: event._id!.toString(),
         price: event.price,
         paymentStatus: 'PAID',
         qrCodeUrl: 'public/qrcode/' + fileName,
@@ -61,6 +62,13 @@ export class PaymentController {
       // create payment
       data.ticketId = ticketCreated._id;
       await this.paymentService.create(data);
+      ticketCreated.eventId = event;
+
+      this.notificationGateway.newTicketPaid(
+        ticketCreated.userId as string,
+        event.ownerId as string,
+        ticketCreated,
+      );
       return ticketCreated;
     } catch (error) {
       console.error(error);
