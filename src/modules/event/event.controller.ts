@@ -12,7 +12,7 @@ import { EventService } from './event.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ICreateEventDto } from './dto/create-event.dto';
 import { diskStorage } from 'multer';
-import { EventGateway } from './event.gateway';
+import { NotificationGateway } from '../notification/notification.gateway';
 import type { Request as Req } from 'express';
 import { EError } from '../../Enums/EError';
 import { JwtService } from '@nestjs/jwt';
@@ -21,8 +21,8 @@ import { JwtService } from '@nestjs/jwt';
 export class EventController {
   constructor(
     private readonly eventService: EventService,
-    private readonly eventGateway: EventGateway,
     private readonly jwtService: JwtService,
+    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   @Post()
@@ -54,7 +54,7 @@ export class EventController {
       data.ownerId = payload.sub;
       if (img) data.photo = img.path;
       const newEvent = await this.eventService.create(data);
-      this.eventGateway.newEventCreated(newEvent);
+      this.notificationGateway.newEventCreated(newEvent);
       return newEvent;
     } catch (error) {
       console.error(error);
