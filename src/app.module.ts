@@ -11,6 +11,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { PaymentModule } from './modules/payment/payment.module';
 import { TicketModule } from './modules/ticket/ticket.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { TicketModule } from './modules/ticket/ticket.module';
     EventModule,
     PaymentModule,
     TicketModule,
+    NotificationModule,
   ],
 })
 export class AppModule {}
