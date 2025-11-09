@@ -5,6 +5,8 @@ import { TicketEntity, TicketSchema } from './entities/ticket.entity';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { EventSchema } from '../event/entities/event.entity';
+import { EventModule } from '../event/event.module';
+import { EventService } from '../event/event.service';
 
 @Module({
   imports: [
@@ -13,8 +15,9 @@ import { EventSchema } from '../event/entities/event.entity';
       { name: TicketEntity.name, schema: TicketSchema },
       { name: 'events', schema: EventSchema },
     ]),
+    EventModule,
   ],
   controllers: [TicketController],
-  providers: [TicketService],
+  providers: [TicketService, EventService],
 })
 export class TicketModule {}
