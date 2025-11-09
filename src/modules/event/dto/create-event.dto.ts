@@ -12,7 +12,7 @@ export class ICreateEventDto {
   price: number;
   capacity?: number;
   ticketsAvailable?: number;
-  ownerId: string;
+  ownerId: string | ICreateUserDto;
   createdAt?: Date;
   updatedAt?: Date;
 }

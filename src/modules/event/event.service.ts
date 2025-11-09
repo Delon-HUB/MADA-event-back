@@ -33,8 +33,15 @@ export class EventService {
     return events;
   }
 
-  async findOne(id: string) {
-    return this.eventModel.findById(id).populate({ path: 'ownerId' }).exec();
+  async findOne(id: string): Promise<ICreateEventDto | null> {
+    const event = await this.eventModel.findById(id).lean().exec();
+    return event != null
+      ? ({
+          ...event,
+          _id: event!._id.toString(),
+          ownerId: event.ownerId.toString(),
+        } as ICreateEventDto)
+      : null;
   }
 
   async findByUserId(userId: string): Promise<ICreateEventDto[]> {
