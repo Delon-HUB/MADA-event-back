@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ICreateEventDto } from './dto/create-event.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { EventEntity } from './entities/event.entity';
+import { EError } from '../../Enums/EError';
 
 @Injectable()
 export class EventService {
@@ -60,5 +61,15 @@ export class EventService {
       };
     });
     return events;
+  }
+
+  async update(
+    id: string,
+    updateEventDto: Partial<ICreateEventDto>,
+  ): Promise<ICreateEventDto | null> {
+    const event = await this.findOne(id);
+    if (!event) throw new NotFoundException(EError.EVENT_NOT_FOUND);
+    await this.eventModel.findByIdAndUpdate(id, updateEventDto).lean().exec();
+    return this.findOne(id);
   }
 }

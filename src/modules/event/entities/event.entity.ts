@@ -42,7 +42,7 @@ export class EventEntity {
     default: [],
     type: [{ type: SchemaTypes.ObjectId, ref: 'users' }],
   })
-  participants: ICreateUserDto[];
+  participants: string[] | ICreateUserDto[];
 
   @Prop({ required: true, default: Date.now() })
   createdAt: Date;
