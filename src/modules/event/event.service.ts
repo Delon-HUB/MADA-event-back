@@ -94,4 +94,14 @@ export class EventService {
     });
     return events;
   }
+
+  async update(
+    id: string,
+    updateEventDto: Partial<ICreateEventDto>,
+  ): Promise<ICreateEventDto | null> {
+    const event = await this.findOne(id);
+    if (!event) throw new NotFoundException(EError.EVENT_NOT_FOUND);
+    await this.eventModel.findByIdAndUpdate(id, updateEventDto).lean().exec();
+    return this.findOne(id);
+  }
 }
