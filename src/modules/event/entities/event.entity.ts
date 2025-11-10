@@ -39,10 +39,10 @@ export class EventEntity {
   @Prop({ required: true, type: SchemaTypes.ObjectId, ref: 'users' })
   ownerId: ObjectId;
 
-  @Prop({ required: true, default: new Date() })
+  @Prop({ required: true, default: Date.now() })
   createdAt: Date;
 
-  @Prop({ required: true, default: new Date() })
+  @Prop({ required: true, default: Date.now() })
   updatedAt: Date;
 }
 
