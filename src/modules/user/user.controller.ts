@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Post,
   Request,
@@ -34,5 +35,10 @@ export class UserController {
   private extractTokenFromHeader(request: Req): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
+  }
+
+  @Post('userId')
+  async getUserById(@Body('userId') userId: string) {
+    return await this.userService.findById(userId);
   }
 }
