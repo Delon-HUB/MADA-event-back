@@ -102,8 +102,10 @@ export class NotificationGateway
       title: `Nouveau participant`,
       content: `Vous avez un nouveau participant pour l'événement << ${(ticket.eventId as ICreateEventDto).title} >>`,
     };
-    await this.notificationService.create(dataForClient);
-    await this.notificationService.create(dataForOrganizer);
+    const clientNotification =
+      await this.notificationService.create(dataForClient);
+    const organizerNotification =
+      await this.notificationService.create(dataForOrganizer);
     this.server
       .to(this.clientConnected.get(client)?.id || '')
       .emit('ticketPaid', ticket);
@@ -111,5 +113,13 @@ export class NotificationGateway
     this.server
       .to(this.organizerConnected.get(organizer)?.id || '')
       .emit('ticketPaid', ticket);
+
+    this.server
+      .to(this.organizerConnected.get(organizer)?.id || '')
+      .emit('newNotification', organizerNotification);
+
+    this.server
+      .to(this.clientConnected.get(client)?.id || '')
+      .emit('newNotification', clientNotification);
   }
 }

@@ -24,7 +24,21 @@ export class NotificationService {
       userId: newNotif.userId.toString(),
     } as ICreateNotificationDto;
 
-    return created;
+    return this.findById(created._id!) as Promise<ICreateNotificationDto>;
+  }
+
+  async findById(id: string): Promise<ICreateNotificationDto | null> {
+    const notification = await this.notificationModel
+      .findById(id)
+      .lean()
+      .exec();
+    return notification
+      ? {
+          ...notification,
+          _id: notification._id.toString(),
+          userId: notification.userId.toString(),
+        }
+      : null;
   }
 
   async findByUserId(userId: string): Promise<ICreateNotificationDto[]> {
@@ -38,5 +52,4 @@ export class NotificationService {
       userId: notification.userId.toString(),
     }));
   }
-  
 }
