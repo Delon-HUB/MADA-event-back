@@ -15,6 +15,9 @@ export class EventEntity {
   @Prop({ required: true })
   location: string;
 
+  @Prop({ required: true })
+  address: string;
+
   @Prop()
   photo?: string;
 

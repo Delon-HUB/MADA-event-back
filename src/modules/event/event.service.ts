@@ -24,6 +24,7 @@ export class EventService {
     const eventsEntities = await this.eventModel.find().exec();
     const events: ICreateEventDto[] = eventsEntities.map((ev) => {
       const event = ev.toObject();
+      console.log(ev);
       return {
         ...event,
         _id: event._id.toString(),

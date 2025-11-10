@@ -6,6 +6,7 @@ export class ICreateEventDto {
   description?: string;
   category: string;
   location: string;
+  address: string;
   photo?: string;
   startDate: Date;
   endDate: Date;
