@@ -12,6 +12,7 @@ export class EventService {
   ) {}
 
   async create(createEventDto: ICreateEventDto): Promise<ICreateEventDto> {
+    createEventDto.participants = [];
     const newEvent = (await this.eventModel.create(createEventDto)).toObject();
     return {
       ...newEvent,

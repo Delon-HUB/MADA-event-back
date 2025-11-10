@@ -2,6 +2,7 @@ import { ICreateUserDto } from '../../user/dto/create-user.dto';
 
 export class ICreateEventDto {
   _id?: string;
+  ownerId: string | ICreateUserDto;
   title: string;
   description?: string;
   category: string;
@@ -12,8 +13,7 @@ export class ICreateEventDto {
   endDate: Date;
   price: number;
   capacity?: number;
-  ticketsAvailable?: number;
-  ownerId: string | ICreateUserDto;
+  participants: string[] | ICreateUserDto[];
   createdAt?: Date;
   updatedAt?: Date;
 }
