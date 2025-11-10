@@ -17,13 +17,21 @@ export class PaymentService {
       await this.paymentModel.create(createPaymentDto)
     ).toObject();
 
-    return newPayment;
+    return await this.findById(newPayment._id.toString());
   }
 
-  async findById(id: string) {
-    return await this.paymentModel
+  async findById(id: string): Promise<ICreatePaymentDto | null> {
+    const payment = await this.paymentModel
       .findById(id)
+      .lean()
       .populate({ path: 'userId' })
       .exec();
+    return payment != null
+      ? {
+          ...payment,
+          _id: payment._id.toString(),
+          ticketId: payment.ticketId.toString(),
+        }
+      : payment;
   }
 }

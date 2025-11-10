@@ -106,10 +106,10 @@ export class NotificationGateway
     await this.notificationService.create(dataForOrganizer);
     this.server
       .to(this.clientConnected.get(client)?.id || '')
-      .emit('ticketPaid', dataForClient);
+      .emit('ticketPaid', ticket);
 
     this.server
       .to(this.organizerConnected.get(organizer)?.id || '')
-      .emit('ticketPaid', dataForOrganizer);
+      .emit('ticketPaid', ticket);
   }
 }

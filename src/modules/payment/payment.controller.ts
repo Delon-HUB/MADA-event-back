@@ -61,11 +61,12 @@ export class PaymentController {
 
       // create payment
       data.ticketId = ticketCreated._id;
-      await this.paymentService.create(data);
+      const payment = await this.paymentService.create(data);
+      ticketCreated.userId = payment!.userId;
       ticketCreated.eventId = event;
 
       this.notificationGateway.newTicketPaid(
-        ticketCreated.userId as string,
+        ticket.userId as string,
         event.ownerId as string,
         ticketCreated,
       );
