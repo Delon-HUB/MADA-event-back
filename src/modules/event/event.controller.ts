@@ -163,4 +163,9 @@ export class EventController {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
+
+  @Get('hello')
+  sayHello() {
+    return 'hello';
+  }
 }
