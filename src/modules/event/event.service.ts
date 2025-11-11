@@ -14,11 +14,7 @@ export class EventService {
 
   async create(createEventDto: ICreateEventDto): Promise<ICreateEventDto> {
     const newEvent = (await this.eventModel.create(createEventDto)).toObject();
-    return {
-      ...newEvent,
-      _id: newEvent._id.toString(),
-      ownerId: newEvent.ownerId.toString(),
-    };
+    return (await this.findById(newEvent._id.toString())) as ICreateEventDto;
   }
 
   async findAll(): Promise<ICreateEventDto[]> {
@@ -53,7 +49,7 @@ export class EventService {
       .find({ ownerId: objectIdOwner })
       .exec();
     const events: ICreateEventDto[] = eventsEntities.map((ev) => {
-      const event = ev.toObject();
+      const event = ev.toJSON();
       return {
         ...event,
         _id: event._id.toString(),
