@@ -36,12 +36,12 @@ export class EventService {
 
   async findById(id: string): Promise<ICreateEventDto | null> {
     const event = await this.eventModel.findById(id).exec();
-
+    const eventJson = event?.toJSON();
     return event != null
       ? ({
-          ...event,
-          _id: event!._id.toString(),
-          ownerId: event.ownerId.toString(),
+          ...eventJson,
+          _id: eventJson!._id.toString(),
+          ownerId: eventJson!.ownerId.toString(),
         } as ICreateEventDto)
       : null;
   }
