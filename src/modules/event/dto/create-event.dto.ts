@@ -14,7 +14,7 @@ export class ICreateEventDto {
   price: number;
   capacity: number;
   ticketAvailable?: number;
-  status?: 'UPCOMING' | 'ONGOING' | 'ENDED';
+  status?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

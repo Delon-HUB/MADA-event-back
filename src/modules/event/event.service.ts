@@ -24,7 +24,7 @@ export class EventService {
   async findAll(): Promise<ICreateEventDto[]> {
     const eventsEntities = await this.eventModel.find().exec();
     const events: ICreateEventDto[] = eventsEntities.map((ev) => {
-      const event = ev.toObject();
+      const event = ev.toJSON();
       return {
         ...event,
         _id: event._id.toString(),
@@ -35,7 +35,8 @@ export class EventService {
   }
 
   async findById(id: string): Promise<ICreateEventDto | null> {
-    const event = await this.eventModel.findById(id).lean().exec();
+    const event = await this.eventModel.findById(id).exec();
+
     return event != null
       ? ({
           ...event,
@@ -45,7 +46,7 @@ export class EventService {
       : null;
   }
 
-  async findByUserId(userId: string): Promise<ICreateEventDto[]> {
+  async findByOwnerId(userId: string): Promise<ICreateEventDto[]> {
     const objectIdOwner = new Types.ObjectId(userId);
 
     const eventsEntities = await this.eventModel

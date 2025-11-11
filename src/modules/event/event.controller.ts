@@ -17,6 +17,8 @@ import { NotificationGateway } from '../notification/notification.gateway';
 import type { Request as Req } from 'express';
 import { EError } from '../../Enums/EError';
 import { JwtService } from '@nestjs/jwt';
+import { IJwtPayload } from '../../interfaces/IJwtPayload';
+import { ERole } from '../../Enums/ERole';
 
 @Controller('event')
 export class EventController {
@@ -44,22 +46,23 @@ export class EventController {
     @Body() data: ICreateEventDto,
     @Request() req: Req,
   ) {
-    const token = this.extractTokenFromHeader(req);
-    if (!token) throw new UnauthorizedException(EError.TOKEN_INVALID);
-    try {
-      const payload = this.jwtService.verify(token, {
-        secret: process.env.JWT_SECRET || 'fdsafkjfkjdsafljwlkjfl',
-      });
-      if (!payload.sub) throw new UnauthorizedException(EError.TOKEN_EXPIRED);
+    const payload = this.getPayload(req);
+    data.ownerId = payload.sub;
+    if (img) data.photo = img.path;
+    const newEvent = await this.eventService.create(data);
+    this.notificationGateway.newEventCreated(newEvent);
+    return newEvent;
+  }
 
-      data.ownerId = payload.sub;
-      if (img) data.photo = img.path;
-      const newEvent = await this.eventService.create(data);
-      this.notificationGateway.newEventCreated(newEvent);
-      return newEvent;
-    } catch (error) {
-      console.error(error);
-    }
+  @Get()
+  async findAll(@Request() req: Req) {
+    const payload = this.getPayload(req);
+    if (payload.role == ERole.ORGANIZER)
+      return await this.eventService.findByOwnerId(payload.sub);
+    else if (payload.role == ERole.CLIENT) {
+      const all = await this.eventService.findAll();
+      return all.filter((e) => e.status == 'UPCOMING' || e.status == 'ONGOING');
+    } else return await this.eventService.findAll();
   }
 
   @Get(':eventId')
@@ -67,29 +70,20 @@ export class EventController {
     return await this.eventService.findById(eventId);
   }
 
-  @Post('all')
-  async findAll() {
-    return await this.eventService.findAll();
-  }
-
   @Post('/mine')
   async getByUserId(@Request() req: Req) {
-    const token = this.extractTokenFromHeader(req);
-    if (!token) throw new UnauthorizedException(EError.TOKEN_INVALID);
-    try {
-      const payload = this.jwtService.verify(token, {
-        secret: process.env.JWT_SECRET || 'fdsafkjfkjdsafljwlkjfl',
-      });
-      if (!payload.sub) throw new UnauthorizedException(EError.TOKEN_EXPIRED);
-      return await this.eventService.findByUserId(payload.sub);
-    } catch (error) {
-      console.error(error);
-    }
+    const payload = this.getPayload(req);
+    if (payload?.sub) return await this.eventService.findByOwnerId(payload.sub);
   }
 
-  private extractTokenFromHeader(request: Req): string | undefined {
+  private getPayload(request: Req): IJwtPayload {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    if (!(type && token)) throw new UnauthorizedException(EError.TOKEN_INVALID);
+    const payload = this.jwtService.verify(token, {
+      secret: process.env.JWT_SECRET || 'fdsafkjfkjdsafljwlkjfl',
+    });
+    if (!payload.sub) throw new UnauthorizedException(EError.TOKEN_EXPIRED);
+    return payload;
   }
 
   @Get('hello')

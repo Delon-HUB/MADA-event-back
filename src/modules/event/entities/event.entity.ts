@@ -40,13 +40,6 @@ export class EventEntity {
   @Prop({ required: true, type: SchemaTypes.ObjectId, ref: 'users' })
   ownerId: ObjectId;
 
-  get status(): string {
-    const now = new Date();
-    if (now < this.startDate) return 'UPCOMING';
-    if (now >= this.startDate && now <= this.endDate) return 'ONGOING';
-    return 'ENDED';
-  }
-
   @Prop({ required: true, default: Date.now() })
   createdAt: Date;
 
