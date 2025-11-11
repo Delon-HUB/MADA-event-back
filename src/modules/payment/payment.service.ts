@@ -21,17 +21,23 @@ export class PaymentService {
   }
 
   async findById(id: string): Promise<ICreatePaymentDto | null> {
-    const payment = await this.paymentModel
-      .findById(id)
-      .lean()
-      .populate({ path: 'userId' })
-      .exec();
-    return payment != null
+    const payment = await this.paymentModel.findById(id).lean().exec();
+    return payment
       ? {
           ...payment,
-          _id: payment._id.toString(),
-          ticketId: payment.ticketId.toString(),
+          _id: payment._id!.toString(),
+          userId: payment.userId.toString(),
+          ticketId: payment.ticketId!.toString(),
+          status: payment.status!,
         }
-      : payment;
+      : null;
+  }
+
+  async update(
+    id: string,
+    data: Partial<ICreatePaymentDto>,
+  ): Promise<ICreatePaymentDto | null> {
+    await this.paymentModel.findByIdAndUpdate(id, data).lean().exec();
+    return this.findById(id);
   }
 }

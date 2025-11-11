@@ -11,27 +11,21 @@ import { type ICreatePaymentDto } from './dto/create-payment.dto';
 import { EError } from '../../Enums/EError';
 import type { Request as Req } from 'express';
 import { JwtService } from '@nestjs/jwt';
-import { EventService } from '../event/event.service';
 import * as qrcode from 'qrcode';
-import { MailService } from '../mail/mail.service';
 import { join } from 'path';
 import { TicketService } from '../ticket/ticket.service';
-import { ICreateTicketDto } from '../ticket/dto/create-ticket.dto';
-import { NotificationGateway } from '../notification/notification.gateway';
+import { ICreateEventDto } from '../event/dto/create-event.dto';
 
 @Controller('payment')
 export class PaymentController {
   constructor(
     private readonly jwtService: JwtService,
     private readonly paymentService: PaymentService,
-    private readonly eventService: EventService,
-    private readonly mailService: MailService,
     private readonly ticketService: TicketService,
-    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   @Post()
-  async create(@Body() data: ICreatePaymentDto, @Request() req: Req) {
+  async create(@Body() paymentDto: ICreatePaymentDto, @Request() req: Req) {
     const token = this.extractTokenFromHeader(req);
     if (!token) throw new UnauthorizedException(EError.TOKEN_INVALID);
     try {
@@ -40,37 +34,38 @@ export class PaymentController {
       });
       if (!payload.sub) throw new UnauthorizedException(EError.TOKEN_EXPIRED);
 
-      const event = await this.eventService.findOne(data.eventId!);
-      if (!event) throw new NotFoundException('EVENT_NOT_FOUND');
-      data.userId = payload.sub;
-
-      // qrcode
-      const rootPath = join(__dirname, '..', '..', '..', 'public/', 'qrcode/');
-      const fileName = 'ticket-' + Date.now() + '.png';
-      await qrcode.toFile(rootPath + fileName, event._id!.toString());
-
-      // create ticket
-      const ticket: ICreateTicketDto = {
-        userId: data.userId,
-        eventId: event._id!.toString(),
-        price: event.price,
-        paymentStatus: 'PAID',
-        qrCodeUrl: 'public/qrcode/' + fileName,
-      };
-      const ticketCreated = await this.ticketService.create(ticket);
+      const ticket = await this.ticketService.findOne(
+        paymentDto.ticketId! as string,
+      );
+      if (!ticket) throw new NotFoundException('TICKET_NOT_FOUND');
 
       // create payment
-      data.ticketId = ticketCreated._id;
-      const payment = await this.paymentService.create(data);
-      ticketCreated.userId = payment!.userId;
-      ticketCreated.eventId = event;
+      const amount =
+        (ticket.eventId as ICreateEventDto).price *
+        (ticket.nbChild * 0.5 + ticket.nbAdult * 1 + ticket.nbSenior * 0.8);
+      paymentDto.userId = payload.sub as string;
+      paymentDto.ticketId = ticket._id!;
+      paymentDto.amount = amount;
+      paymentDto.status = 'PAID';
+      let payment = await this.paymentService.create(paymentDto);
 
-      this.notificationGateway.newTicketPaid(
-        ticket.userId as string,
-        event.ownerId as string,
-        ticketCreated,
-      );
-      return ticketCreated;
+      // qrcode
+      const path =
+        join(__dirname, '..', '..', '..', 'public/', 'qrcode/') +
+        'ticket-' +
+        Date.now() +
+        '.png';
+      const qrCodeData = {
+        paymentId: payment!._id,
+        child: ticket.nbChild,
+        adult: ticket.nbAdult,
+        senior: ticket.nbSenior,
+        amount: amount,
+      };
+      await qrcode.toFile(path, JSON.stringify(qrCodeData));
+
+      // notification
+      return payment;
     } catch (error) {
       console.error(error);
     }
