@@ -4,23 +4,47 @@ import {
   Body,
   Request,
   UnauthorizedException,
+  BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { TicketService } from './ticket.service';
 import { type ICreateTicketDto } from './dto/create-ticket.dto';
 import { type Request as Req } from 'express';
 import { EError } from '../../Enums/EError';
 import { JwtService } from '@nestjs/jwt';
+import { EventService } from '../event/event.service';
 
 @Controller('ticket')
 export class TicketController {
   constructor(
     private readonly ticketService: TicketService,
     private readonly jwtService: JwtService,
+    private readonly eventService: EventService,
   ) {}
 
   @Post()
   async create(@Body() createTicketDto: ICreateTicketDto) {
+    const event = await this.eventService.findOne(
+      createTicketDto.eventId as string,
+    );
+    if (!event) throw new NotFoundException(EError.EVENT_NOT_FOUND);
+    const nbTicket =
+      createTicketDto.nbAdult +
+      createTicketDto.nbChild +
+      createTicketDto.nbSenior;
+    if (
+      event.capacity &&
+      event.participants?.length + nbTicket > event.capacity
+    )
+      throw new BadRequestException(EError.EVENT_CAPACITY_EXCEEDED);
+
     const ticket = await this.ticketService.create(createTicketDto);
+    await this.eventService.update(event._id!, {
+      participants: [
+        ...(event.participants as string[]),
+        createTicketDto.userId as string,
+      ],
+    });
     return ticket;
   }
 
