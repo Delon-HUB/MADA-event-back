@@ -1,14 +1,14 @@
-import { ICreateUserDto } from '../../user/dto/create-user.dto';
+import { ICreateTicketDto } from '../../ticket/dto/create-ticket.dto';
 
 export interface ICreatePaymentDto {
   _id?: string;
-  ticketId?: string;
-  eventId?: string;
-  userId: string | ICreateUserDto;
+  userId: string;
+  ticketId: string | ICreateTicketDto;
   amount: number;
   method: string;
   phoneNumber: string;
-  status?: string;
+  status: string;
+  qrCodeUrl?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

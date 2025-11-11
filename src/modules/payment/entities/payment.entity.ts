@@ -19,8 +19,11 @@ export class PaymentEntity {
   @Prop({ required: true })
   phoneNumber: string;
 
-  @Prop()
+  @Prop({ required: true, default: 'PENDING' })
   status?: string;
+
+  @Prop()
+  qrCodeUrl?: string;
 
   @Prop({ required: true, default: Date.now() })
   createdAt: Date;
