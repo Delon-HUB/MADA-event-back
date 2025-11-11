@@ -33,15 +33,15 @@ export class TicketController {
       createTicketDto.nbChild +
       createTicketDto.nbSenior;
 
-    const isFree = !!event.capacity;
+    const isIllimited = event.capacity == 0;
     const isExceeded =
       event.ticketAvailable != undefined &&
       event.ticketAvailable - nbTicket < 0;
-    if (!isFree && isExceeded)
+    if (!isIllimited && isExceeded)
       throw new BadRequestException(EError.EVENT_CAPACITY_EXCEEDED);
 
     const ticket = await this.ticketService.create(createTicketDto);
-    if (!isFree)
+    if (!isIllimited)
       await this.eventService.update(event._id!, {
         ticketAvailable: event.ticketAvailable! - nbTicket,
       });

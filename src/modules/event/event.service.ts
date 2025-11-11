@@ -13,6 +13,7 @@ export class EventService {
   ) {}
 
   async create(createEventDto: ICreateEventDto): Promise<ICreateEventDto> {
+    createEventDto.ticketAvailable = createEventDto.capacity;
     const newEvent = (await this.eventModel.create(createEventDto)).toObject();
     return (await this.findById(newEvent._id.toString())) as ICreateEventDto;
   }
