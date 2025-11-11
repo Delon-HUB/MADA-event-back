@@ -85,7 +85,7 @@ export class EventService {
       .find({ ownerId: objectIdOwner })
       .exec();
     const events: ICreateEventDto[] = eventsEntities.map((ev) => {
-      const event = ev.toObject();
+      const event = ev.toJSON();
       return {
         ...event,
         _id: event._id.toString(),
