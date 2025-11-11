@@ -1,37 +1,17 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ICreateTicketDto } from './dto/create-ticket.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { TicketEntity } from './entities/ticket.entity';
-import { EventService } from '../event/event.service';
-import { EError } from '../../Enums/EError';
 
 @Injectable()
 export class TicketService {
   constructor(
     @InjectModel(TicketEntity.name)
     private readonly ticketModel: Model<TicketEntity>,
-    private readonly eventService: EventService,
   ) {}
 
   async create(createTicketDto: ICreateTicketDto): Promise<ICreateTicketDto> {
-    const event = await this.eventService.findOne(
-      createTicketDto.eventId as string,
-    );
-    if (!event) throw new NotFoundException(EError.EVENT_NOT_FOUND);
-
-    if (event.capacity && event.participants?.length >= event.capacity)
-      throw new BadRequestException(EError.EVENT_CAPACITY_EXCEEDED);
-    await this.eventService.update(event._id!, {
-      participants: [
-        ...(event.participants as string[]),
-        createTicketDto.userId as string,
-      ],
-    });
     const newTicket = (
       await this.ticketModel.create(createTicketDto)
     ).toObject();
