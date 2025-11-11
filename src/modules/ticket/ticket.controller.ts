@@ -32,19 +32,19 @@ export class TicketController {
       createTicketDto.nbAdult +
       createTicketDto.nbChild +
       createTicketDto.nbSenior;
-    if (
-      event.capacity &&
-      event.participants?.length + nbTicket > event.capacity
-    )
+
+    const isFree = !!event.capacity;
+    const isExceeded =
+      event.ticketAvailable != undefined &&
+      event.ticketAvailable - nbTicket < 0;
+    if (!isFree && isExceeded)
       throw new BadRequestException(EError.EVENT_CAPACITY_EXCEEDED);
 
     const ticket = await this.ticketService.create(createTicketDto);
-    await this.eventService.update(event._id!, {
-      participants: [
-        ...(event.participants as string[]),
-        createTicketDto.userId as string,
-      ],
-    });
+    if (!isFree)
+      await this.eventService.update(event._id!, {
+        ticketAvailable: event.ticketAvailable! - nbTicket,
+      });
     return ticket;
   }
 
