@@ -24,7 +24,7 @@ export class TicketController {
 
   @Post()
   async create(@Body() createTicketDto: ICreateTicketDto) {
-    const event = await this.eventService.findOne(
+    const event = await this.eventService.findById(
       createTicketDto.eventId as string,
     );
     if (!event) throw new NotFoundException(EError.EVENT_NOT_FOUND);
