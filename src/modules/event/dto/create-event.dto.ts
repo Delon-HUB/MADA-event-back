@@ -12,8 +12,9 @@ export class ICreateEventDto {
   startDate: Date;
   endDate: Date;
   price: number;
-  capacity?: number;
-  participants: string[] | ICreateUserDto[];
+  capacity: number;
+  ticketAvailable?: number;
+  status?: 'UPCOMING' | 'ONGOING' | 'ENDED';
   createdAt?: Date;
   updatedAt?: Date;
 }

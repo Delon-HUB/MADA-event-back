@@ -32,17 +32,20 @@ export class EventEntity {
   price: number;
 
   @Prop()
-  capacity?: number;
+  capacity: number;
+
+  @Prop()
+  ticketAvailable?: number;
 
   @Prop({ required: true, type: SchemaTypes.ObjectId, ref: 'users' })
   ownerId: ObjectId;
 
-  @Prop({
-    required: true,
-    default: [],
-    type: [{ type: SchemaTypes.ObjectId, ref: 'users' }],
-  })
-  participants: string[] | ICreateUserDto[];
+  get status(): string {
+    const now = new Date();
+    if (now < this.startDate) return 'UPCOMING';
+    if (now >= this.startDate && now <= this.endDate) return 'ONGOING';
+    return 'ENDED';
+  }
 
   @Prop({ required: true, default: Date.now() })
   createdAt: Date;
@@ -52,3 +55,11 @@ export class EventEntity {
 }
 
 export const EventSchema = SchemaFactory.createForClass(EventEntity);
+EventSchema.virtual('status').get(function () {
+  const now = new Date();
+  if (now < this.startDate) return 'UPCOMING';
+  if (now >= this.startDate && now <= this.endDate) return 'ONGOING';
+  return 'ENDED';
+});
+
+EventSchema.set('toJSON', { virtuals: true });
