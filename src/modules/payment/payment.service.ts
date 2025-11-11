@@ -3,6 +3,7 @@ import { ICreatePaymentDto } from './dto/create-payment.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { PaymentEntity } from './entities/payment.entity';
 import { Model } from 'mongoose';
+import { ICreateTicketDto } from '../ticket/dto/create-ticket.dto';
 
 @Injectable()
 export class PaymentService {
@@ -39,5 +40,22 @@ export class PaymentService {
   ): Promise<ICreatePaymentDto | null> {
     await this.paymentModel.findByIdAndUpdate(id, data).lean().exec();
     return this.findById(id);
+  }
+
+  async findByUserId(userId: string): Promise<ICreatePaymentDto[] | []> {
+    const payments = await this.paymentModel
+      .find({ userId: userId })
+      .populate({ path: 'ticketId' })
+      .lean()
+      .exec();
+    return payments.map((p) => {
+      return {
+        ...p,
+        _id: p._id.toString(),
+        userId: p.userId.toString(),
+        ticketId: p.ticketId as ICreateTicketDto,
+        status: p.status!,
+      };
+    });
   }
 }

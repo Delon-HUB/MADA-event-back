@@ -22,7 +22,7 @@ import { NotificationModule } from '../notification/notification.module';
       { name: PaymentEntity.name, schema: PaymentSchema },
       { name: EventEntity.name, schema: EventSchema },
       { name: 'users', schema: UserSchema },
-      { name: TicketEntity.name, schema: TicketSchema },
+      { name: 'tickets', schema: TicketSchema },
     ]),
     TicketModule,
     JwtModule,

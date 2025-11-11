@@ -5,6 +5,8 @@ import {
   UnauthorizedException,
   Request,
   NotFoundException,
+  Get,
+  Param,
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { type ICreatePaymentDto } from './dto/create-payment.dto';
@@ -50,11 +52,8 @@ export class PaymentController {
       let payment = await this.paymentService.create(paymentDto);
 
       // qrcode
-      const path =
-        join(__dirname, '..', '..', '..', 'public/', 'qrcode/') +
-        'ticket-' +
-        Date.now() +
-        '.png';
+      const path = join('public/', 'qrcode/') + 'ticket-' + Date.now() + '.png';
+
       const qrCodeData = {
         paymentId: payment!._id,
         child: ticket.nbChild,
@@ -64,11 +63,21 @@ export class PaymentController {
       };
       await qrcode.toFile(path, JSON.stringify(qrCodeData));
 
+      payment = await this.paymentService.update(payment?._id!, {
+        qrCodeUrl: path,
+      });
+
       // notification
       return payment;
     } catch (error) {
       console.error(error);
     }
+  }
+
+  @Get(':userId')
+  async getByUserId(@Param('userId') userId: string) {
+    const payments = await this.paymentService.findByUserId(userId);
+    return payments;
   }
 
   private extractTokenFromHeader(request: Req): string | undefined {

@@ -19,5 +19,6 @@ import { EventService } from '../event/event.service';
   ],
   controllers: [TicketController],
   providers: [TicketService, EventService],
+  exports: [MongooseModule],
 })
 export class TicketModule {}
