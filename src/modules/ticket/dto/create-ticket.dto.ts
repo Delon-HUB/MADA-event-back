@@ -5,10 +5,10 @@ export interface ICreateTicketDto {
   _id?: string;
   userId: string | ICreateUserDto;
   eventId: string | ICreateEventDto;
-  price: number;
-  paymentStatus: 'PENDING' | 'PAID' | 'CANCELLED';
-  paymentMethod?: string;
-  qrCodeUrl?: string;
+  nbChild: number;
+  nbAdult: number;
+  nbSenior: number;
+  status?: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'CANCELLED';
   createdAt?: Date;
   updatedAt?: Date;
 }

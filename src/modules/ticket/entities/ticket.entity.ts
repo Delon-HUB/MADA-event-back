@@ -6,22 +6,22 @@ import { type ICreateUserDto } from '../../user/dto/create-user.dto';
 @Schema({ timestamps: true, collection: 'tickets' })
 export class TicketEntity {
   @Prop({ type: Types.ObjectId, ref: 'users', required: true })
-  userId: ICreateUserDto;
+  userId: string | ICreateUserDto;
 
   @Prop({ type: Types.ObjectId, ref: 'events', required: true })
-  eventId: ICreateEventDto;
+  eventId: string | ICreateEventDto;
 
   @Prop({ required: true })
-  price: number;
+  nbChild: number;
 
-  @Prop({ required: true, enum: ['PENDING', 'PAID', 'CANCELLED'] })
-  paymentStatus: 'PENDING' | 'PAID' | 'CANCELLED';
+  @Prop({ required: true })
+  nbAdult: number;
 
-  @Prop({ required: false })
-  paymentMethod?: string;
+  @Prop({ required: true })
+  nbSenior: number;
 
-  @Prop({ required: false })
-  qrCodeUrl?: string;
+  @Prop({ required: true, default: 'PENDING' })
+  status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'CANCELLED';
 
   @Prop({ required: true, default: Date.now() })
   createdAt: Date;
