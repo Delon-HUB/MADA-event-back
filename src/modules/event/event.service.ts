@@ -35,7 +35,7 @@ export class EventService {
     return events;
   }
 
-  async findOne(id: string): Promise<ICreateEventDto | null> {
+  async findById(id: string): Promise<ICreateEventDto | null> {
     const event = await this.eventModel.findById(id).lean().exec();
     return event != null
       ? ({
@@ -67,9 +67,9 @@ export class EventService {
     id: string,
     updateEventDto: Partial<ICreateEventDto>,
   ): Promise<ICreateEventDto | null> {
-    const event = await this.findOne(id);
+    const event = await this.findById(id);
     if (!event) throw new NotFoundException(EError.EVENT_NOT_FOUND);
     await this.eventModel.findByIdAndUpdate(id, updateEventDto).lean().exec();
-    return this.findOne(id);
+    return this.findById(id);
   }
 }

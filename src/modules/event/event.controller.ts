@@ -7,6 +7,7 @@ import {
   UploadedFile,
   UnauthorizedException,
   Request,
+  Param,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -59,6 +60,11 @@ export class EventController {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  @Get(':eventId')
+  async getById(@Param('eventId') eventId: string) {
+    return await this.eventService.findById(eventId);
   }
 
   @Post('all')
