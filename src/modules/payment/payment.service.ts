@@ -21,17 +21,38 @@ export class PaymentService {
     return await this.findById(newPayment._id.toString());
   }
 
-  async findById(id: string): Promise<ICreatePaymentDto | null> {
-    const payment = await this.paymentModel.findById(id).lean().exec();
-    return payment
-      ? {
-          ...payment,
-          _id: payment._id!.toString(),
-          userId: payment.userId.toString(),
-          ticketId: payment.ticketId!.toString(),
-          status: payment.status!,
-        }
-      : null;
+  async findById(
+    id: string,
+    populate?: boolean,
+  ): Promise<ICreatePaymentDto | null> {
+    if (populate) {
+      const payment = await this.paymentModel
+        .findById(id)
+        .populate({ path: 'userId' })
+        .populate({ path: 'ticketId' })
+        .lean()
+        .exec();
+      return payment
+        ? {
+            ...payment,
+            _id: payment._id!.toString(),
+            userId: payment.userId.toString(),
+            ticketId: payment.ticketId!.toString(),
+            status: payment.status!,
+          }
+        : null;
+    } else {
+      const payment = await this.paymentModel.findById(id).lean().exec();
+      return payment
+        ? {
+            ...payment,
+            _id: payment._id!.toString(),
+            userId: payment.userId.toString(),
+            ticketId: payment.ticketId!.toString(),
+            status: payment.status!,
+          }
+        : null;
+    }
   }
 
   async update(
