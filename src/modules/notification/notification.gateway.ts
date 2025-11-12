@@ -12,6 +12,7 @@ import { ERole } from '../../Enums/ERole';
 import { ICreateTicketDto } from '../ticket/dto/create-ticket.dto';
 import { ICreateNotificationDto } from './dto/create-notification.dto';
 import { NotificationService } from './notification.service';
+import { ICreatePaymentDto } from '../payment/dto/create-payment.dto';
 
 @WebSocketGateway({
   cors: {
@@ -86,19 +87,17 @@ export class NotificationGateway
       .emit('newEvent', event);
   }
 
-  async newTicketPaid(
-    client: string,
-    organizer: string,
-    ticket: ICreateTicketDto,
-  ) {
+  async newTicketPaid(payment: ICreatePaymentDto) {
+    const ticket = payment.ticketId as ICreateTicketDto;
+
     const dataForClient: ICreateNotificationDto = {
-      userId: client,
+      userId: payment.userId as string,
       title: 'Achat de billet',
-      content: `Le billet pour l'événement << ${(ticket.eventId as ICreateEventDto).title} >> a été payé avec succès.`,
+      content: `Le billet pour l'événement << ${(ticket.eventId as ICreateEventDto).title} >> a été payé.`,
     };
 
     const dataForOrganizer: ICreateNotificationDto = {
-      userId: organizer,
+      userId: (ticket.eventId as ICreateEventDto).ownerId as string,
       title: `Nouveau participant`,
       content: `Vous avez un nouveau participant pour l'événement << ${(ticket.eventId as ICreateEventDto).title} >>`,
     };
@@ -106,18 +105,26 @@ export class NotificationGateway
       await this.notificationService.create(dataForClient);
     const organizerNotification =
       await this.notificationService.create(dataForOrganizer);
-    this.server.to('client').emit('ticketPaid', ticket);
 
+    this.server.to('client').emit('ticketPaid', payment);
     this.server
-      .to(this.organizerConnected.get(organizer)?.id || '')
+      .to(
+        this.organizerConnected.get(
+          (ticket.eventId as ICreateEventDto).ownerId as string,
+        )?.id || '',
+      )
       .emit('ticketPaid', ticket);
 
     this.server
-      .to(this.organizerConnected.get(organizer)?.id || '')
-      .emit('newNotification', organizerNotification);
+      .to(this.clientConnected.get(payment.userId as string)?.id || '')
+      .emit('newNotification', clientNotification);
 
     this.server
-      .to(this.clientConnected.get(client)?.id || '')
-      .emit('newNotification', clientNotification);
+      .to(
+        this.organizerConnected.get(
+          (ticket.eventId as ICreateEventDto).ownerId as string,
+        )?.id || '',
+      )
+      .emit('newNotification', organizerNotification);
   }
 }

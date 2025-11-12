@@ -17,6 +17,7 @@ import * as qrcode from 'qrcode';
 import { join } from 'path';
 import { TicketService } from '../ticket/ticket.service';
 import { ICreateEventDto } from '../event/dto/create-event.dto';
+import { NotificationGateway } from '../notification/notification.gateway';
 
 @Controller('payment')
 export class PaymentController {
@@ -24,6 +25,7 @@ export class PaymentController {
     private readonly jwtService: JwtService,
     private readonly paymentService: PaymentService,
     private readonly ticketService: TicketService,
+    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   @Post()
@@ -66,8 +68,9 @@ export class PaymentController {
       payment = await this.paymentService.update(payment?._id!, {
         qrCodeUrl: path,
       });
-
+      payment!.ticketId = ticket;
       // notification
+      await this.notificationGateway.newTicketPaid(payment!);
       return payment;
     } catch (error) {
       console.error(error);
