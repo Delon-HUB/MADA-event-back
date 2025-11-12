@@ -74,9 +74,15 @@ export class PaymentController {
     }
   }
 
-  @Get(':userId')
+  @Get('user/:userId')
   async getByUserId(@Param('userId') userId: string) {
     const payments = await this.paymentService.findByUserId(userId);
+    return payments;
+  }
+
+  @Get('ticket/:ticketId')
+  async getByTicketId(@Param('ticketId') ticketId: string) {
+    const payments = await this.paymentService.findByTicketId(ticketId);
     return payments;
   }
 

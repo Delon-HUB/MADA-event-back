@@ -58,4 +58,20 @@ export class PaymentService {
       };
     });
   }
+
+  async findByTicketId(ticketId: string): Promise<ICreatePaymentDto[] | []> {
+    const payments = await this.paymentModel
+      .find({ ticketId: ticketId })
+      .lean()
+      .exec();
+    return payments.map((p) => {
+      return {
+        ...p,
+        _id: p._id.toString(),
+        userId: p.userId.toString(),
+        ticketId: p.ticketId as ICreateTicketDto,
+        status: p.status!,
+      };
+    });
+  }
 }
