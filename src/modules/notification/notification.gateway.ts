@@ -89,15 +89,17 @@ export class NotificationGateway
 
   async newTicketPaid(payment: ICreatePaymentDto) {
     const ticket = payment.ticketId as ICreateTicketDto;
+    const clientId = payment.userId!.toString();
+    const organizerId = (ticket.eventId as ICreateEventDto).ownerId.toString();
 
     const dataForClient: ICreateNotificationDto = {
-      userId: payment.userId as string,
+      userId: clientId!,
       title: 'Achat de billet',
       content: `Le billet pour l'événement << ${(ticket.eventId as ICreateEventDto).title} >> a été payé.`,
     };
 
     const dataForOrganizer: ICreateNotificationDto = {
-      userId: (ticket.eventId as ICreateEventDto).ownerId as string,
+      userId: organizerId,
       title: `Nouveau participant`,
       content: `Vous avez un nouveau participant pour l'événement << ${(ticket.eventId as ICreateEventDto).title} >>`,
     };
@@ -108,23 +110,15 @@ export class NotificationGateway
 
     this.server.to('client').emit('ticketPaid', payment);
     this.server
-      .to(
-        this.organizerConnected.get(
-          (ticket.eventId as ICreateEventDto).ownerId as string,
-        )?.id || '',
-      )
-      .emit('ticketPaid', ticket);
+      .to(this.organizerConnected.get(organizerId)?.id || '')
+      .emit('ticketPaid', payment);
 
     this.server
-      .to(this.clientConnected.get(payment.userId as string)?.id || '')
+      .to(this.clientConnected.get(clientId)?.id || '')
       .emit('newNotification', clientNotification);
 
     this.server
-      .to(
-        this.organizerConnected.get(
-          (ticket.eventId as ICreateEventDto).ownerId as string,
-        )?.id || '',
-      )
+      .to(this.organizerConnected.get(organizerId)?.id || '')
       .emit('newNotification', organizerNotification);
   }
 }
