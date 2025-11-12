@@ -38,7 +38,7 @@ export class TicketService {
     return tickets;
   }
 
-  async findByEventId(eventId: string) {
+  async findByEventId(eventId: string): Promise<ICreateTicketDto[]> {
     const ticketEntities = await this.ticketModel
       .find({ eventId: eventId })
       .populate({ path: 'userId' })

@@ -6,6 +6,8 @@ import {
   UnauthorizedException,
   BadRequestException,
   NotFoundException,
+  Get,
+  Param,
 } from '@nestjs/common';
 import { TicketService } from './ticket.service';
 import { type ICreateTicketDto } from './dto/create-ticket.dto';
@@ -66,8 +68,8 @@ export class TicketController {
     }
   }
 
-  @Post('event')
-  async findTicketForEvent(@Body('eventId') eventId: string) {
+  @Get('event/:eventId')
+  async findTicketForEvent(@Param('eventId') eventId: string) {
     const result = await this.ticketService.findByEventId(eventId);
     return result;
   }
