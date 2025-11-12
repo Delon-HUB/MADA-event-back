@@ -109,6 +109,7 @@ export class NotificationGateway
     const organizerNotification =
       await this.notificationService.create(dataForOrganizer);
 
+    this.server.to('client').emit('ticketPaid', payment);
     this.server
       .to('client')
       .to(this.organizerConnected.get(organizerId)?.id || '')
