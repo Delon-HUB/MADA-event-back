@@ -15,6 +15,7 @@ export class ICreateEventDto {
   capacity: number;
   ticketAvailable?: number;
   status?: string;
+  canceled?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
