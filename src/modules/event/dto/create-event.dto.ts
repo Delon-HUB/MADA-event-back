@@ -1,3 +1,4 @@
+import { EventStatus } from '../../../Enums/EStatus';
 import { ICreateUserDto } from '../../user/dto/create-user.dto';
 
 export class ICreateEventDto {
@@ -14,7 +15,7 @@ export class ICreateEventDto {
   price: number;
   capacity: number;
   ticketAvailable?: number;
-  status?: string;
+  status?: EventStatus;
   canceled?: boolean;
   createdAt?: Date;
   updatedAt?: Date;

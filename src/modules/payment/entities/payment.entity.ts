@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { SchemaTypes } from 'mongoose';
 import { type ICreateUserDto } from '../../user/dto/create-user.dto';
 import { ICreateTicketDto } from '../../ticket/dto/create-ticket.dto';
+import { PaymentStatus } from '../../../Enums/EStatus';
 
 @Schema({ timestamps: true, collection: 'payments' })
 export class PaymentEntity {
@@ -20,8 +21,8 @@ export class PaymentEntity {
   @Prop({ required: true })
   phoneNumber: string;
 
-  @Prop({ required: true, default: 'PENDING' })
-  status: string;
+  @Prop({ required: true, default: PaymentStatus.PENDING })
+  status: PaymentStatus;
 
   @Prop()
   qrCodeUrl?: string;

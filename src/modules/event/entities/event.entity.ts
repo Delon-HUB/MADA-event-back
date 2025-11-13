@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { type ObjectId, SchemaTypes } from 'mongoose';
 import { ICreateUserDto } from '../../user/dto/create-user.dto';
+import { EventStatus } from '../../../Enums/EStatus';
 
 @Schema({ timestamps: true, collection: 'events' })
 export class EventEntity {
@@ -52,11 +53,11 @@ export class EventEntity {
 
 export const EventSchema = SchemaFactory.createForClass(EventEntity);
 EventSchema.virtual('status').get(function () {
-  if (this.canceled) return 'CANCELED';
+  if (this.canceled) return EventStatus.CANCELLED;
   const now = new Date();
-  if (now < this.startDate) return 'UPCOMING';
-  if (now >= this.startDate && now <= this.endDate) return 'ONGOING';
-  return 'ENDED';
+  if (now < this.startDate) return EventStatus.UPCOMING;
+  if (now >= this.startDate && now <= this.endDate) return EventStatus.ONGOING;
+  return EventStatus.ENDED;
 });
 
 EventSchema.set('toJSON', { virtuals: true });
