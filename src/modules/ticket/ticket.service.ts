@@ -59,15 +59,15 @@ export class TicketService {
       .findById(ticketId)
       .populate({ path: 'userId' })
       .populate({ path: 'eventId' })
-      .lean()
       .exec();
     if (!ticketEntity) return null;
+      const tickets = ticketEntity.toJSON()
 
     return {
-      ...ticketEntity,
-      _id: ticketEntity._id.toString(),
-      userId: ticketEntity.userId,
-      eventId: ticketEntity.eventId,
+      ...tickets,
+      _id: tickets._id.toString(),
+      userId: tickets.userId,
+      eventId: tickets.eventId,
     };
   }
 }

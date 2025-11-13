@@ -42,7 +42,7 @@ export class EventEntity {
   ownerId: ObjectId;
 
   @Prop({ required: true, default: false })
-  canceled: boolean;
+  cancelled: boolean;
 
   @Prop({ required: true, default: Date.now() })
   createdAt: Date;
@@ -53,7 +53,7 @@ export class EventEntity {
 
 export const EventSchema = SchemaFactory.createForClass(EventEntity);
 EventSchema.virtual('status').get(function () {
-  if (this.canceled) return EventStatus.CANCELLED;
+  if (this.cancelled) return EventStatus.CANCELLED;
   const now = new Date();
   if (now < this.startDate) return EventStatus.UPCOMING;
   if (now >= this.startDate && now <= this.endDate) return EventStatus.ONGOING;
