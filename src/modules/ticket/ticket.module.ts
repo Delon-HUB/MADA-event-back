@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TicketService } from './ticket.service';
 import { TicketController } from './ticket.controller';
 import { TicketEntity, TicketSchema } from './entities/ticket.entity';
@@ -15,7 +15,7 @@ import { EventService } from '../event/event.service';
       { name: TicketEntity.name, schema: TicketSchema },
       { name: 'events', schema: EventSchema },
     ]),
-    EventModule,
+    forwardRef(() => EventModule),
   ],
   controllers: [TicketController],
   providers: [TicketService, EventService],

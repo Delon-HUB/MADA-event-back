@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { PaymentController } from './payment.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -24,13 +24,12 @@ import { NotificationModule } from '../notification/notification.module';
       { name: 'users', schema: UserSchema },
       { name: 'tickets', schema: TicketSchema },
     ]),
-    TicketModule,
-    JwtModule,
-    EventModule,
-    MailModule,
-    UserModule,
-    TicketModule,
-    NotificationModule,
+    forwardRef(() => JwtModule),
+    forwardRef(() => TicketModule),
+    forwardRef(() => EventModule),
+    forwardRef(() => NotificationModule),
+    forwardRef(() => UserModule),
+    forwardRef(() => MailModule),
   ],
   controllers: [PaymentController],
   providers: [PaymentService, EventService, MailService, TicketService],
