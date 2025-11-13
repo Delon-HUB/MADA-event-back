@@ -15,6 +15,9 @@ export class PaymentEntity {
   @Prop({ required: true })
   amount: number;
 
+  @Prop({ default: 0 })
+  refundedAmount?: number;
+
   @Prop({ required: true })
   method: string;
 

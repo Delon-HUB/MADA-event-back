@@ -45,9 +45,12 @@ export class PaymentController {
       if (!ticket) throw new NotFoundException('TICKET_NOT_FOUND');
 
       // create payment
-      const amount =
-        (ticket.eventId as ICreateEventDto).price *
-        (ticket.nbChild * 0.5 + ticket.nbAdult * 1 + ticket.nbSenior * 0.8);
+      const amount = parseFloat(
+        (
+          (ticket.eventId as ICreateEventDto).price *
+          (ticket.nbChild * 0.5 + ticket.nbAdult * 1 + ticket.nbSenior * 0.8)
+        ).toFixed(2),
+      );
       paymentDto.userId = payload.sub as string;
       paymentDto.ticketId = ticket._id!;
       paymentDto.amount = amount;

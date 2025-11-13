@@ -7,6 +7,7 @@ export interface ICreatePaymentDto {
   userId: string | ICreateUserDto;
   ticketId: string | ICreateTicketDto;
   amount: number;
+  refundedAmount?: number;
   method: string;
   phoneNumber: string;
   status?: PaymentStatus;
