@@ -18,6 +18,7 @@ import { join } from 'path';
 import { TicketService } from '../ticket/ticket.service';
 import { ICreateEventDto } from '../event/dto/create-event.dto';
 import { NotificationGateway } from '../notification/notification.gateway';
+import { PaymentStatus } from '../../Enums/EStatus';
 
 @Controller('payment')
 export class PaymentController {
@@ -50,7 +51,7 @@ export class PaymentController {
       paymentDto.userId = payload.sub as string;
       paymentDto.ticketId = ticket._id!;
       paymentDto.amount = amount;
-      paymentDto.status = 'PAID';
+      paymentDto.status = PaymentStatus.PAID;
       let payment = await this.paymentService.create(paymentDto);
 
       // qrcode

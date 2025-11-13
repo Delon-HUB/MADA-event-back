@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { PaymentEntity } from './entities/payment.entity';
 import { Model } from 'mongoose';
 import { ICreateTicketDto } from '../ticket/dto/create-ticket.dto';
+import { PaymentStatus } from '../../Enums/EStatus';
 
 @Injectable()
 export class PaymentService {
@@ -13,7 +14,7 @@ export class PaymentService {
   ) {}
 
   async create(createPaymentDto: ICreatePaymentDto) {
-    createPaymentDto.status = 'PAID';
+    createPaymentDto.status = PaymentStatus.PAID;
     const newPayment = (
       await this.paymentModel.create(createPaymentDto)
     ).toObject();
