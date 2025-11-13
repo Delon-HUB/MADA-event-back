@@ -44,6 +44,7 @@ export class NotificationService {
   async findByUserId(userId: string): Promise<ICreateNotificationDto[]> {
     const notifications = await this.notificationModel
       .find({ userId })
+      .sort({ createdAt: -1 })
       .lean()
       .exec();
     return notifications.map((notification) => ({
