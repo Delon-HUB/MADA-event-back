@@ -5,6 +5,7 @@ import { PaymentEntity } from './entities/payment.entity';
 import { Model } from 'mongoose';
 import { ICreateTicketDto } from '../ticket/dto/create-ticket.dto';
 import { PaymentStatus } from '../../Enums/EStatus';
+import { ICreateUserDto } from '../user/dto/create-user.dto';
 
 @Injectable()
 export class PaymentService {
@@ -37,8 +38,8 @@ export class PaymentService {
         ? {
             ...payment,
             _id: payment._id!.toString(),
-            userId: payment.userId.toString(),
-            ticketId: payment.ticketId!.toString(),
+            userId: payment.userId as ICreateUserDto,
+            ticketId: payment.ticketId as ICreateTicketDto,
             status: payment.status!,
           }
         : null;

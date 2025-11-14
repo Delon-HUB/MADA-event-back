@@ -7,6 +7,7 @@ import {
   NotFoundException,
   Get,
   Param,
+  HttpException,
 } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { type ICreatePaymentDto } from './dto/create-payment.dto';
@@ -18,7 +19,9 @@ import { join } from 'path';
 import { TicketService } from '../ticket/ticket.service';
 import { ICreateEventDto } from '../event/dto/create-event.dto';
 import { NotificationGateway } from '../notification/notification.gateway';
-import { PaymentStatus } from '../../Enums/EStatus';
+import { EventStatus, PaymentStatus } from '../../Enums/EStatus';
+import { ICreateTicketDto } from '../ticket/dto/create-ticket.dto';
+import { EventService } from '../event/event.service';
 
 @Controller('payment')
 export class PaymentController {
@@ -27,6 +30,7 @@ export class PaymentController {
     private readonly paymentService: PaymentService,
     private readonly ticketService: TicketService,
     private readonly notificationGateway: NotificationGateway,
+    private readonly eventService: EventService,
   ) {}
 
   @Post()
@@ -91,6 +95,78 @@ export class PaymentController {
   async getByTicketId(@Param('ticketId') ticketId: string) {
     const payments = await this.paymentService.findByTicketId(ticketId);
     return payments;
+  }
+
+  @Post('refund/accept/')
+  async reqRefund(@Body('paymentId') paymentId: string) {
+    const res = await this.getRefundAmount(paymentId);
+
+    const refundedPay = await this.paymentService.update(paymentId, {
+      refundedAmount: res.allowedAmount,
+      status: PaymentStatus.REFUNDED,
+    });
+    const ticket = await this.ticketService.findOne(
+      refundedPay!.ticketId as string,
+    );
+    // update ticketAvailable
+    const eventUpdated = await this.eventService.update(
+      (ticket?.eventId as ICreateEventDto)!._id!,
+      {
+        ticketAvailable:
+          (ticket?.eventId as ICreateEventDto).ticketAvailable! +
+          (ticket!.nbAdult + ticket!.nbChild + ticket!.nbSenior),
+      },
+    );
+    await this.notificationGateway.eventUpdated(eventUpdated!);
+    // // notification client
+    refundedPay!.ticketId = ticket!;
+    refundedPay!.ticketId.eventId = eventUpdated!;
+    await this.notificationGateway.paymentRefunded(refundedPay!);
+    return refundedPay;
+  }
+
+  @Get('refund/:paymentId')
+  async getRefundAmount(@Param('paymentId') paymentId: string) {
+    const payment = await this.paymentService.findById(paymentId, true);
+    if (!payment) throw new NotFoundException('PAYMENT_NOT_FOUND');
+    const ticket = payment.ticketId as ICreateTicketDto;
+    const event = await this.eventService.findById(ticket.eventId as string);
+    if (!event) throw new NotFoundException('EVENT_NOT_FOUND');
+    if (event.status != EventStatus.UPCOMING)
+      throw new HttpException('REFUND_NOT_ALLOWED', 400);
+    const allowedAmount = this.calculateRefund(
+      event.startDate,
+      new Date(),
+      payment.amount,
+    );
+    if (!allowedAmount) throw new HttpException('REFUND_NOT_ALLOWED', 400);
+
+    return { paymentId: payment._id, allowedAmount: allowedAmount };
+  }
+
+  private calculateRefund(
+    eventDate: Date,
+    requestDate: Date,
+    price: number,
+  ): number {
+    const oneDay = 1000 * 60 * 60 * 24;
+
+    const diffDays = Math.ceil(
+      (eventDate.getTime() - requestDate.getTime()) / oneDay,
+    );
+    if (diffDays > 5) return price;
+    switch (diffDays) {
+      case 5:
+        return price * 0.8;
+      case 4:
+        return price * 0.6;
+      case 3:
+        return price * 0.4;
+      case 2:
+        return price * 0.2;
+      default:
+        return 0;
+    }
   }
 
   private extractTokenFromHeader(request: Req): string | undefined {
