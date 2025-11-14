@@ -46,7 +46,7 @@ export class PaymentController {
       const ticket = await this.ticketService.findOne(
         paymentDto.ticketId! as string,
       );
-      if (!ticket) throw new NotFoundException('TICKET_NOT_FOUND');
+      if (!ticket) throw new NotFoundException(EError.TICKET_NOT_FOUND);
 
       // create payment
       const amount = parseFloat(
@@ -128,18 +128,18 @@ export class PaymentController {
   @Get('refund/:paymentId')
   async getRefundAmount(@Param('paymentId') paymentId: string) {
     const payment = await this.paymentService.findById(paymentId, true);
-    if (!payment) throw new NotFoundException('PAYMENT_NOT_FOUND');
+    if (!payment) throw new NotFoundException(EError.PAYMENT_NOT_FOUND);
     const ticket = payment.ticketId as ICreateTicketDto;
     const event = await this.eventService.findById(ticket.eventId as string);
-    if (!event) throw new NotFoundException('EVENT_NOT_FOUND');
+    if (!event) throw new NotFoundException(EError.EVENT_NOT_FOUND);
     if (event.status != EventStatus.UPCOMING)
-      throw new HttpException('REFUND_NOT_ALLOWED', 400);
+      throw new HttpException(EError.PAYMENT_REFUND_NOT_ALLOWED, 400);
     const allowedAmount = this.calculateRefund(
       event.startDate,
       new Date(),
       payment.amount,
     );
-    if (!allowedAmount) throw new HttpException('REFUND_NOT_ALLOWED', 400);
+    if (!allowedAmount) throw new HttpException(EError.PAYMENT_REFUND_NOT_ALLOWED, 400);
 
     return { paymentId: payment._id, allowedAmount: allowedAmount };
   }

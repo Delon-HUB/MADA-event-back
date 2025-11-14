@@ -90,7 +90,7 @@ export class EventController {
   @Patch(':id')
   async cancelEvent(@Param('id') eventId: string) {
     const event = await this.eventService.findById(eventId);
-    if (!event) throw new NotFoundException('EVENT_NOT_FOUND');
+    if (!event) throw new NotFoundException(EError.EVENT_NOT_FOUND);
     const eventCanceled = await this.eventService.update(eventId, {
       cancelled: true,
     });
