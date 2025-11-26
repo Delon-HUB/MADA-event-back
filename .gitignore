@@ -48,7 +48,9 @@ lerna-debug.log*
 
 # data
 public/**
-!public/**/default*
+!public/**/default.*
+!public/**/*.gitkeep
+
 
 # Runtime data
 pids
