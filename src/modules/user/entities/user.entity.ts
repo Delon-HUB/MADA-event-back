@@ -28,6 +28,9 @@ export class UserEntity implements ICreateUserDto {
   @Prop({ required: true, default: ERole.CLIENT })
   role: ERole;
 
+  @Prop({ default: '/public/profile/default.jpeg' })
+  photo?: string;
+
   @Prop({ required: true, default: Date.now() })
   createdAt: Date;
 

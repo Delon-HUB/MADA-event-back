@@ -37,12 +37,12 @@ export class AuthService {
     if (!isPasswordValid) throw new HttpException(EError.WRONG_PASSWORD, 401);
     const payload: IJwtPayload = {
       sub: user._id!,
-      expiresIn: new Date(parseInt(process.env.JWT_EXPIRES_IN + '')),
+      role: user.role,
     };
     return {
-      accessToken: await this.jwtService.signAsync(payload, {
+      accessToken: await this.jwtService.sign(payload, {
         secret: process.env.JWT_SECRET + '' || 'fdsafkjfkjdsafljwlkjfl',
-        expiresIn: parseInt(process.env.JWT_EXPIRES_IN + '') || '3600',
+        expiresIn: '1d',
       }),
       verified: user.verified,
     };

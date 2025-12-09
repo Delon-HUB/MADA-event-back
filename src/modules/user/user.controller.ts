@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Post,
   Request,
@@ -21,7 +22,7 @@ export class UserController {
     const token = this.extractTokenFromHeader(req);
     if (!token) throw new UnauthorizedException(EError.TOKEN_INVALID);
     try {
-      const payload = this.jwtService.verify(token, {
+      const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET || 'fdsafkjfkjdsafljwlkjfl',
       });
       if (!payload.sub) throw new UnauthorizedException(EError.TOKEN_EXPIRED);
@@ -34,5 +35,10 @@ export class UserController {
   private extractTokenFromHeader(request: Req): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
+  }
+
+  @Post('userId')
+  async getUserById(@Body('userId') userId: string) {
+    return await this.userService.findById(userId);
   }
 }

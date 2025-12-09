@@ -9,6 +9,7 @@ export interface ICreateUserDto {
   otp?: string | null;
   otpExpiry?: Date | null;
   role: ERole;
+  photo?: string;
   verified: boolean;
   createdAt: Date;
   updatedAt: Date;

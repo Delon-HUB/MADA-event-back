@@ -79,16 +79,54 @@ export class MailService {
             <p>Si vous n'avez pas demandé ce code, vous pouvez ignorer cet e-mail.</p>
             <p>Merci,<br />L'équipe Support</p>
 
-            <div class="footer">© 2025 e-resaka. Tous droits réservés.</div>
+            <div class="footer">© 2025 MADA-event. Tous droits réservés.</div>
             </div>
         </body>
         </html>`;
 
     const info = this.transporter.sendMail({
-      from: { name: 'e-resaka', address: process.env.EMAIL_FROM + '' },
+      from: { name: 'MADA-event', address: process.env.EMAIL_FROM + '' },
       to,
       subject: "Code de vérification d'identité",
       html: message,
+    });
+    info
+      .then((res) => {
+        this.logger.log(`Email sent to ${to}: ${res.messageId}`);
+      })
+      .catch((err) => {
+        this.logger.error(`Failed to send email to ${to}: ${err.message}`);
+      });
+  }
+
+  async sendQRCode(to: string, event: string, qrcode: string) {
+    const htmlTemplate = `
+      <div style="font-family: Arial, sans-serif; text-align: center; color: #333;">
+        <h2>Confirmation de votre billet</h2>
+        <p>Merci pour votre achat. Voici votre QR Code :</p>
+
+        <img 
+          src="cid:qrcodeimg" 
+          alt="QR Code du billet" 
+          style="margin-top: 15px; width: 200px; height: 200px; border-radius: 10px;"
+        />
+        <p>Montrez ce code à l'entrée pour valider votre billet.</p>
+      </div>
+`;
+
+    const info = this.transporter.sendMail({
+      from: { name: 'mada-event', address: process.env.EMAIL_FROM + '' },
+      to,
+      subject: `Bille pour l'événement ${event}`,
+      html: htmlTemplate,
+      attachments: [
+        {
+          filename: 'qrcode.png',
+          content: qrcode.split('base64,')[1],
+          encoding: 'base64',
+          cid: 'qrcodeimg',
+        },
+      ],
     });
     info
       .then((res) => {
