@@ -83,30 +83,21 @@ export class EventService {
     return this.eventModel.findById(id).populate({ path: 'ownerId' }).exec();
   }
 
-  async findByUserId(userId: string): Promise<ICreateEventDto[]> {
+  async findByUserId(userId: string): Promise<IEvent[]> {
     const objectIdOwner = new Types.ObjectId(userId);
 
     const eventsEntities = await this.eventModel
       .find({ ownerId: objectIdOwner })
       .exec();
-    const events: ICreateEventDto[] = eventsEntities.map((ev) => {
+    const events: IEvent[] = eventsEntities.map((ev) => {
       const event = ev.toJSON();
       return {
         ...event,
         _id: event._id.toString(),
         ownerId: event.ownerId.toString(),
+        capacity: event.capacity!,
       };
     });
     return events;
-  }
-
-  async update(
-    id: string,
-    updateEventDto: Partial<ICreateEventDto>,
-  ): Promise<ICreateEventDto | null> {
-    const event = await this.findById(id);
-    if (!event) throw new NotFoundException(EError.EVENT_NOT_FOUND);
-    await this.eventModel.findByIdAndUpdate(id, updateEventDto).lean().exec();
-    return this.findById(id);
   }
 }

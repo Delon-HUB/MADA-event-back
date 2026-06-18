@@ -30,9 +30,6 @@ export class PaymentEntity {
   @Prop({ required: false })
   qrCodeUrl?: string;
 
-  @Prop()
-  qrCodeUrl?: string;
-
   @Prop({ required: true, default: Date.now() })
   createdAt!: Date;
 

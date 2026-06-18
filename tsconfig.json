@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "node20",
+    "moduleResolution": "nodenext",
 
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

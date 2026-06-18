@@ -143,25 +143,4 @@ export class EventController {
   sayHello() {
     return 'hello';
   }
-
-  @Post('/mine')
-  async getByUserId(@Request() req: Req) {
-    const payload = this.getPayload(req);
-    if (payload?.sub) return await this.eventService.findByOwnerId(payload.sub);
-  }
-
-  private getPayload(request: Req): IJwtPayload {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    if (!(type && token)) throw new UnauthorizedException(EError.TOKEN_INVALID);
-    const payload = this.jwtService.verify(token, {
-      secret: process.env.JWT_SECRET || 'fdsafkjfkjdsafljwlkjfl',
-    });
-    if (!payload.sub) throw new UnauthorizedException(EError.TOKEN_EXPIRED);
-    return payload;
-  }
-
-  @Get('hello')
-  sayHello() {
-    return 'hello';
-  }
 }
