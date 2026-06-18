@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { ICreateUserDto } from '../user/dto/create-user.dto';
-import { compareSync, genSaltSync, hashSync } from 'bcrypt-ts';
+import { compareSync, genSaltSync, hashSync } from 'bcrypt';
 import { ILoginDto } from './dto/login.dto';
 import { EError } from '../../Enums/EError';
 import { JwtService } from '@nestjs/jwt';
