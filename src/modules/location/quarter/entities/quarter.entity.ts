@@ -4,7 +4,7 @@ import { CommuneEntity } from '../../commune/entities/commune.entity';
 
 @Schema({ collection: 'quarters' })
 export class QuarterEntity {
-  @Prop({ required: true, toLowerCase: true, trim: true })
+  @Prop({ required: true, transform: (v) => v.toLowerCase().trim() })
   name!: string;
 
   @Prop({ type: SchemaTypes.ObjectId, ref: CommuneEntity.name, required: true })

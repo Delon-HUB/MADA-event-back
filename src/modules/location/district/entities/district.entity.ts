@@ -4,7 +4,7 @@ import { RegionEntity } from '../../region/entities/region.entity';
 
 @Schema({ collection: 'districts' })
 export class DistrictEntity {
-  @Prop({ required: true, toLowerCase: true, trim: true })
+  @Prop({ required: true, transform: (v) => v.toLowerCase().trim() })
   name!: string;
 
   @Prop({ type: SchemaTypes.ObjectId, ref: RegionEntity.name, required: true })

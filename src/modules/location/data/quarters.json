@@ -1,14 +1,4 @@
 {
-  "Region": {
-    "Commune": [
-      {
-        "commune": "Commune",
-        "region": "Region",
-        "fokontany": "Fokontany",
-        "district": "District"
-      }
-    ]
-  },
   "ANALAMANGA": {
     "Ambato": [
       {

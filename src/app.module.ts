@@ -9,7 +9,6 @@ import { join } from 'path';
 import { PaymentModule } from './modules/payment/payment.module';
 import { TicketModule } from './modules/ticket/ticket.module';
 import { NotificationModule } from './modules/notification/notification.module';
-import { RegionModule } from './modules/location/region/region.module';
 
 @Module({
   imports: [
@@ -27,7 +26,6 @@ import { RegionModule } from './modules/location/region/region.module';
     PaymentModule,
     TicketModule,
     NotificationModule,
-    RegionModule,
   ],
 })
 export class AppModule {}

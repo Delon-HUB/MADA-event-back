@@ -11,13 +11,19 @@ export class RegionService {
     private readonly regionModel: Model<RegionEntity>,
   ) {}
 
-  async create(data: IRegion) {
+  async create(data: IRegion): Promise<IRegion> {
     const found = await this.regionModel.findOne({ name: data.name });
     if (found)
       throw new HttpException('REGION_ALREADY_EXIST', HttpStatus.BAD_REQUEST);
 
-    const created = await this.regionModel.create({ name: data.name });
-    return created;
+    const created = (
+      await this.regionModel.create({ name: data.name })
+    ).toObject();
+    return {
+      ...created,
+      _id: created._id.toString(),
+      districts: [],
+    };
   }
 
   async findAll() {}

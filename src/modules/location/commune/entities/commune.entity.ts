@@ -4,7 +4,10 @@ import { DistrictEntity } from '../../district/entities/district.entity';
 
 @Schema({ collection: 'districts' })
 export class CommuneEntity {
-  @Prop({ required: true, toLowerCase: true, trim: true })
+  @Prop({
+    required: true,
+    transform: (v) => v.toLowerCase().trim(),
+  })
   name!: string;
 
   @Prop({
