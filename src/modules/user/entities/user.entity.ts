@@ -5,16 +5,16 @@ import { ERole } from '../../../Enums/ERole';
 @Schema({ timestamps: true, collection: 'users' })
 export class UserEntity implements ICreateUserDto {
   @Prop({ required: true })
-  firstName: string;
+  firstName!: string;
 
   @Prop()
-  lastName: string;
+  lastName?: string;
 
   @Prop({ required: true, unique: true })
-  email: string;
+  email!: string;
 
   @Prop({ required: true })
-  password: string;
+  password!: string;
 
   @Prop()
   otp?: string;
@@ -23,19 +23,19 @@ export class UserEntity implements ICreateUserDto {
   otpExpiry?: Date;
 
   @Prop({ required: true, default: false })
-  verified: boolean;
+  verified!: boolean;
 
   @Prop({ required: true, default: ERole.CLIENT })
-  role: ERole;
+  role!: ERole;
 
   @Prop({ default: '/public/profile/default.jpeg' })
   photo?: string;
 
   @Prop({ required: true, default: Date.now() })
-  createdAt: Date;
+  createdAt!: Date;
 
   @Prop({ required: true, default: Date.now() })
-  updatedAt: Date;
+  updatedAt!: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserEntity);

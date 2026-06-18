@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ICreateEventDto } from './dto/create-event.dto';
+import type { IEvent } from './dto/create-event.dto';
 import { diskStorage } from 'multer';
 import { NotificationGateway } from '../notification/notification.gateway';
 import type { Request as Req } from 'express';
@@ -51,7 +51,7 @@ export class EventController {
   )
   async create(
     @UploadedFile() img: Express.Multer.File,
-    @Body() data: ICreateEventDto,
+    @Body() data: IEvent,
     @Request() req: Req,
   ) {
     const payload = this.getPayload(req);

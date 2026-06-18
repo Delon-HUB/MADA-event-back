@@ -6,7 +6,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { ICreateEventDto } from '../event/dto/create-event.dto';
+import { IEvent } from '../event/dto/create-event.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ERole } from '../../Enums/ERole';
 import { ICreateTicketDto } from '../ticket/dto/create-ticket.dto';
@@ -24,7 +24,7 @@ export class NotificationGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer()
-  server: Server;
+  server!: Server;
   private readonly logger: Logger;
 
   private readonly clientConnected: Map<string, Socket> = new Map<
@@ -81,7 +81,7 @@ export class NotificationGateway
     } catch (error) {}
   }
 
-  newEventCreated(event: ICreateEventDto) {
+  newEventCreated(event: IEvent) {
     this.server
       .to('client')
       .to(this.organizerConnected.get(event.ownerId as string)?.id || '')
@@ -91,18 +91,18 @@ export class NotificationGateway
   async newTicketPaid(payment: ICreatePaymentDto) {
     const ticket = payment.ticketId as ICreateTicketDto;
     const clientId = payment.userId!.toString();
-    const organizerId = (ticket.eventId as ICreateEventDto).ownerId.toString();
+    const organizerId = (ticket.eventId as IEvent).ownerId.toString();
 
     const dataForClient: ICreateNotificationDto = {
       userId: clientId!,
       title: 'Achat de billet',
-      content: `Le billet pour l'événement << ${(ticket.eventId as ICreateEventDto).title} >> a été payé.`,
+      content: `Le billet pour l'événement << ${(ticket.eventId as IEvent).title} >> a été payé.`,
     };
 
     const dataForOrganizer: ICreateNotificationDto = {
       userId: organizerId,
       title: `Nouveau participant`,
-      content: `Vous avez un nouveau participant pour l'événement << ${(ticket.eventId as ICreateEventDto).title} >>`,
+      content: `Vous avez un nouveau participant pour l'événement << ${(ticket.eventId as IEvent).title} >>`,
     };
     const clientNotification =
       await this.notificationService.create(dataForClient);
@@ -126,20 +126,19 @@ export class NotificationGateway
   async paymentRefunded(payment: ICreatePaymentDto) {
     const ticket: ICreateTicketDto = payment.ticketId as ICreateTicketDto;
     const clientId: string = payment.userId as string;
-    const organizerId: string = (ticket.eventId as ICreateEventDto)
-      .ownerId as string;
+    const organizerId: string = (ticket.eventId as IEvent).ownerId as string;
 
     const dataForClient: ICreateNotificationDto = {
       userId: clientId!,
       title: 'Remboursement',
-      content: `Le billet pour l'événement << ${(ticket.eventId as ICreateEventDto).title} >> a été remboursé.\n
+      content: `Le billet pour l'événement << ${(ticket.eventId as IEvent).title} >> a été remboursé.\n
       Vous allez recévoir l'argent sur le numéro ${payment.phoneNumber}`,
     };
 
     const dataForOrganizer: ICreateNotificationDto = {
       userId: organizerId,
       title: `Remboursement`,
-      content: `${(ticket.userId as ICreateUserDto).firstName} a été remboursé sur l'événement << ${(ticket.eventId as ICreateEventDto).title} >>`,
+      content: `${(ticket.userId as ICreateUserDto).firstName} a été remboursé sur l'événement << ${(ticket.eventId as IEvent).title} >>`,
     };
     const clientNotification =
       await this.notificationService.create(dataForClient);
@@ -160,14 +159,14 @@ export class NotificationGateway
       .emit('payment-refunded', payment);
   }
 
-  async eventCancelled(event: ICreateEventDto) {
+  async eventCancelled(event: IEvent) {
     this.server
       .to('client')
       .to(this.organizerConnected.get(event.ownerId as string)?.id || '')
       .emit('event-cancelled', event);
   }
 
-  async eventUpdated(event: ICreateEventDto) {
+  async eventUpdated(event: IEvent) {
     this.server
       .to('client')
       .to(this.organizerConnected.get(event.ownerId as string)?.id || '')

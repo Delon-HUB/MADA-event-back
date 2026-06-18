@@ -1,33 +1,33 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { ICreateEventDto } from '../../event/dto/create-event.dto';
+import { IEvent } from '../../event/dto/create-event.dto';
 import { type ICreateUserDto } from '../../user/dto/create-user.dto';
 
 @Schema({ timestamps: true, collection: 'tickets' })
 export class TicketEntity {
   @Prop({ type: Types.ObjectId, ref: 'users', required: true })
-  userId: string | ICreateUserDto;
+  userId!: string | ICreateUserDto;
 
   @Prop({ type: Types.ObjectId, ref: 'events', required: true })
-  eventId: string | ICreateEventDto;
+  eventId!: string | IEvent;
 
   @Prop({ required: true })
-  nbChild: number;
+  nbChild!: number;
 
   @Prop({ required: true })
-  nbAdult: number;
+  nbAdult!: number;
 
   @Prop({ required: true })
-  nbSenior: number;
+  nbSenior!: number;
 
   @Prop({ required: true, default: 'PENDING' })
-  status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'CANCELLED';
+  status!: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'CANCELLED';
 
   @Prop({ required: true, default: Date.now() })
-  createdAt: Date;
+  createdAt!: Date;
 
   @Prop({ required: true, default: Date.now() })
-  updatedAt: Date;
+  updatedAt!: Date;
 }
 
 export const TicketSchema = SchemaFactory.createForClass(TicketEntity);

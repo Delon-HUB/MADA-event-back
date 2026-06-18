@@ -17,7 +17,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as qrcode from 'qrcode';
 import { join } from 'path';
 import { TicketService } from '../ticket/ticket.service';
-import { ICreateEventDto } from '../event/dto/create-event.dto';
+import { IEvent } from '../event/dto/create-event.dto';
 import { NotificationGateway } from '../notification/notification.gateway';
 import { EventStatus, PaymentStatus } from '../../Enums/EStatus';
 import { ICreateTicketDto } from '../ticket/dto/create-ticket.dto';
@@ -51,7 +51,7 @@ export class PaymentController {
       // create payment
       const amount = parseFloat(
         (
-          (ticket.eventId as ICreateEventDto).price *
+          (ticket.eventId as IEvent).price *
           (ticket.nbChild * 0.5 + ticket.nbAdult * 1 + ticket.nbSenior * 0.8)
         ).toFixed(2),
       );
@@ -110,10 +110,10 @@ export class PaymentController {
     );
     // update ticketAvailable
     const eventUpdated = await this.eventService.update(
-      (ticket?.eventId as ICreateEventDto)!._id!,
+      (ticket?.eventId as IEvent)!._id!,
       {
         ticketAvailable:
-          (ticket?.eventId as ICreateEventDto).ticketAvailable! +
+          (ticket?.eventId as IEvent).ticketAvailable! +
           (ticket!.nbAdult + ticket!.nbChild + ticket!.nbSenior),
       },
     );

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ICreateEventDto } from './dto/create-event.dto';
+import { IEvent } from './dto/create-event.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { EventEntity } from './entities/event.entity';
@@ -12,29 +12,35 @@ export class EventService {
     private readonly eventModel: Model<EventEntity>,
   ) {}
 
-  async create(createEventDto: ICreateEventDto): Promise<ICreateEventDto> {
+  async create(createEventDto: IEvent): Promise<IEvent> {
     createEventDto.ticketAvailable = createEventDto.capacity;
-    const newEvent = (await this.eventModel.create(createEventDto)).toObject();
-    return (await this.findById(newEvent._id.toString())) as ICreateEventDto;
+    const newEvent = (
+      await this.eventModel.create({
+        ...createEventDto,
+        ownerId: createEventDto.ownerId.toString(),
+      })
+    ).toObject();
+    return (await this.findById(newEvent._id.toString())) as IEvent;
   }
 
-  async findAll(): Promise<ICreateEventDto[]> {
+  async findAll(): Promise<IEvent[]> {
     const eventsEntities = await this.eventModel
       .find()
       .sort({ cratedAt: -1 })
       .exec();
-    const events: ICreateEventDto[] = eventsEntities.map((ev) => {
+    const events: IEvent[] = eventsEntities.map((ev) => {
       const event = ev.toJSON();
       return {
         ...event,
         _id: event._id.toString(),
         ownerId: event.ownerId.toString(),
+        capacity: event.capacity!,
       };
     });
     return events;
   }
 
-  async findById(id: string): Promise<ICreateEventDto | null> {
+  async findById(id: string): Promise<IEvent | null> {
     const event = await this.eventModel.findById(id).exec();
     const eventJson = event?.toJSON();
     return event != null
@@ -42,23 +48,22 @@ export class EventService {
           ...eventJson,
           _id: eventJson!._id.toString(),
           ownerId: eventJson!.ownerId.toString(),
-        } as ICreateEventDto)
+        } as IEvent)
       : null;
   }
 
-  async findByOwnerId(userId: string): Promise<ICreateEventDto[]> {
-    const objectIdOwner = new Types.ObjectId(userId);
-
+  async findByOwnerId(userId: string): Promise<IEvent[]> {
     const eventsEntities = await this.eventModel
-      .find({ ownerId: objectIdOwner })
+      .find({ ownerId: userId })
       .sort({ createdAt: -1 })
       .exec();
-    const events: ICreateEventDto[] = eventsEntities.map((ev) => {
+    const events: IEvent[] = eventsEntities.map((ev) => {
       const event = ev.toJSON();
       return {
         ...event,
         _id: event._id.toString(),
         ownerId: event.ownerId.toString(),
+        capacity: event.capacity!,
       };
     });
     return events;
@@ -66,8 +71,8 @@ export class EventService {
 
   async update(
     id: string,
-    updateEventDto: Partial<ICreateEventDto>,
-  ): Promise<ICreateEventDto | null> {
+    updateEventDto: Partial<IEvent>,
+  ): Promise<IEvent | null> {
     const event = await this.findById(id);
     if (!event) throw new NotFoundException(EError.EVENT_NOT_FOUND);
     await this.eventModel.findByIdAndUpdate(id, updateEventDto).lean().exec();

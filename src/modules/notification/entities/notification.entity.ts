@@ -4,19 +4,19 @@ import { Types } from 'mongoose';
 @Schema({ timestamps: true, collection: 'notifications' })
 export class NotificationEntity {
   @Prop({ required: true })
-  title: string;
+  title!: string;
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  userId: Types.ObjectId;
+  userId!: Types.ObjectId;
 
   @Prop({ required: true })
-  content: string;
+  content!: string;
 
   @Prop({ required: true, default: Date.now() })
-  createdAt: Date;
+  createdAt!: Date;
 
   @Prop({ required: true, default: Date.now() })
-  updatedAt: Date;
+  updatedAt!: Date;
 }
 
 export const NotificationSchema =

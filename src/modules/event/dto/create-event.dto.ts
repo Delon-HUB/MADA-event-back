@@ -1,7 +1,7 @@
 import { EventStatus } from '../../../Enums/EStatus';
 import { ICreateUserDto } from '../../user/dto/create-user.dto';
 
-export class ICreateEventDto {
+export interface IEvent {
   _id?: string;
   ownerId: string | ICreateUserDto;
   title: string;

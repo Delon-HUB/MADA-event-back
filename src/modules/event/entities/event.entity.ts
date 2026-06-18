@@ -1,54 +1,53 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { type ObjectId, SchemaTypes } from 'mongoose';
-import { ICreateUserDto } from '../../user/dto/create-user.dto';
 import { EventStatus } from '../../../Enums/EStatus';
 
 @Schema({ timestamps: true, collection: 'events' })
 export class EventEntity {
   @Prop({ required: true })
-  title: string;
+  title!: string;
 
   @Prop()
   description?: string;
 
   @Prop({ required: true })
-  category: string;
+  category!: string;
 
   @Prop({ required: true })
-  location: string;
+  location!: string;
 
   @Prop({ required: true })
-  address: string;
+  address!: string;
 
-  @Prop()
+  @Prop({ required: false })
   photo?: string;
 
   @Prop({ required: true })
-  startDate: Date;
+  startDate!: Date;
 
   @Prop({ required: true })
-  endDate: Date;
+  endDate!: Date;
 
   @Prop({ required: true })
-  price: number;
+  price!: number;
 
-  @Prop()
-  capacity: number;
+  @Prop({ required: false })
+  capacity?: number;
 
   @Prop()
   ticketAvailable?: number;
 
   @Prop({ required: true, type: SchemaTypes.ObjectId, ref: 'users' })
-  ownerId: ObjectId;
+  ownerId!: ObjectId | string;
 
   @Prop({ required: true, default: false })
-  cancelled: boolean;
+  cancelled!: boolean;
 
   @Prop({ required: true, default: Date.now() })
-  createdAt: Date;
+  createdAt!: Date;
 
   @Prop({ required: true, default: Date.now() })
-  updatedAt: Date;
+  updatedAt!: Date;
 }
 
 export const EventSchema = SchemaFactory.createForClass(EventEntity);
