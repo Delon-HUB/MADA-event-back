@@ -26,6 +26,17 @@ export class RegionService {
     };
   }
 
+  async findByName(name: string): Promise<IRegion[]> {
+    const result = await this.regionModel
+      .find({ name: { $regex: `^${name}`, $options: 'i' } }, {}, { limit: 20 })
+      .exec();
+    return result.map((r) => ({
+      ...r.toObject(),
+      _id: r._id.toString(),
+      districts: [],
+    }));
+  }
+
   async findAll(): Promise<IRegion[]> {
     const regions = await this.regionModel.find().exec();
     return regions.map((r) => ({
@@ -33,5 +44,16 @@ export class RegionService {
       _id: r._id.toString(),
       districts: [],
     }));
+  }
+
+  async findById(_id: string): Promise<IRegion | null> {
+    const found = await this.regionModel.findById({ _id }).exec();
+    return found
+      ? {
+          ...found.toObject(),
+          _id: found._id.toString(),
+          districts: [],
+        }
+      : null;
   }
 }

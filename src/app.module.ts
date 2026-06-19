@@ -8,8 +8,10 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { PaymentModule } from './modules/payment/payment.module';
 import { TicketModule } from './modules/ticket/ticket.module';
-import { NotificationModule } from './modules/notification/notification.module';
-import { LocationModule } from './modules/location/location.module';
+import { RegionModule } from './modules/location/region/region.module';
+import { DistrictModule } from './modules/location/district/district.module';
+import { CommuneModule } from './modules/location/commune/commune.module';
+import { QuarterModule } from './modules/location/quarter/quarter.module';
 
 @Module({
   imports: [
@@ -26,7 +28,11 @@ import { LocationModule } from './modules/location/location.module';
     EventModule,
     PaymentModule,
     TicketModule,
-    LocationModule,
+
+    QuarterModule,
+    CommuneModule,
+    DistrictModule,
+    RegionModule,
   ],
 })
 export class AppModule {}

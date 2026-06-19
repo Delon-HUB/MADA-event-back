@@ -8,7 +8,7 @@ import { DistrictModule } from '../location/district/district.module';
 import { DistrictService } from '../location/district/district.service';
 import { CommuneModule } from '../location/commune/commune.module';
 import { CommuneService } from '../location/commune/commune.service';
-import { QuarterModule } from '../location/quarter/region.module';
+import { QuarterModule } from '../location/quarter/quarter.module';
 import { QuarterService } from '../location/quarter/quarter.service';
 
 @Module({
