@@ -24,9 +24,19 @@ export class QuarterService {
   async findByName(name: string): Promise<IQuarter[]> {
     const result = await this.quarterModel
       .find({ name: { $regex: `^${name}`, $options: 'i' } }, {}, { limit: 20 })
+      .populate({
+        path: 'communeId',
+        populate: {
+          path: 'districtId',
+          populate: {
+            path: 'regionId',
+          },
+        },
+      })
+      .lean()
       .exec();
     return result.map((q) => ({
-      ...q.toObject(),
+      ...q,
       _id: q._id.toString(),
       communeId: q.communeId as unknown as ICommune,
     }));

@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ObjectId, SchemaTypes } from 'mongoose';
 import { DistrictEntity } from '../../district/entities/district.entity';
 
-@Schema({ collection: 'districts' })
+@Schema({ collection: 'communes' })
 export class CommuneEntity {
   @Prop({
     required: true,

@@ -12,7 +12,6 @@ export class RegionController {
 
   @Get('search')
   async findByName(@Query('name') name: string) {
-    console.log('find by name');
     return await this.regionService.findByName(name);
   }
 

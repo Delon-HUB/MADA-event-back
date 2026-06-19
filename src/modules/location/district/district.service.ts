@@ -25,9 +25,11 @@ export class DistrictService {
   async findByName(name: string): Promise<IDistrict[]> {
     const result = await this.districtModel
       .find({ name: { $regex: `^${name}`, $options: 'i' } }, {}, { limit: 20 })
+      .populate('regionId')
+      .lean()
       .exec();
     return result.map((d) => ({
-      ...d.toObject(),
+      ...d,
       _id: d._id.toString(),
       regionId: d.regionId as unknown as IRegion,
       communes: [],

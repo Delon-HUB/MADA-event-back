@@ -25,9 +25,16 @@ export class CommuneService {
   async findByName(name: string): Promise<ICommune[]> {
     const result = await this.communeModel
       .find({ name: { $regex: `^${name}`, $options: 'i' } }, {}, { limit: 20 })
+      .populate({
+        path: 'districtId',
+        populate: {
+          path: 'regionId',
+        },
+      })
+      .lean()
       .exec();
     return result.map((c) => ({
-      ...c.toObject(),
+      ...c,
       _id: c._id.toString(),
       districtId: c.districtId as unknown as IDistrict,
       quarters: [],
