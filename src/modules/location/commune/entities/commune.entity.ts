@@ -7,6 +7,7 @@ export class CommuneEntity {
   @Prop({
     required: true,
     transform: (v) => v.toLowerCase().trim(),
+    index: true,
   })
   name!: string;
 
@@ -14,6 +15,7 @@ export class CommuneEntity {
     type: SchemaTypes.ObjectId,
     ref: DistrictEntity.name,
     required: true,
+    index: true,
   })
   districtId!: ObjectId | string;
 }
