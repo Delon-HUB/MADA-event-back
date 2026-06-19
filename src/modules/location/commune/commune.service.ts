@@ -20,4 +20,24 @@ export class CommuneService {
       quarters: [],
     };
   }
+
+  async findAll(): Promise<ICommune[]> {
+    const communes = await this.communeModel.find().exec();
+    return communes.map((c) => ({
+      ...c.toObject(),
+      _id: c._id.toString(),
+      districtId: c.districtId.toString(),
+      quarters: [],
+    }));
+  }
+
+  async findByDistrictId(districtId: string): Promise<ICommune[]> {
+    const communes = await this.communeModel.find({ districtId }).exec();
+    return communes.map((c) => ({
+      ...c.toObject(),
+      _id: c._id.toString(),
+      districtId: c.districtId.toString(),
+      quarters: [],
+    }));
+  }
 }

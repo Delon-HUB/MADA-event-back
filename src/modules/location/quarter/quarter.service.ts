@@ -19,4 +19,22 @@ export class QuarterService {
       communeId: created.communeId.toString(),
     };
   }
+
+  async findAll(): Promise<IQuarter[]> {
+    const quarters = await this.quarterModel.find().exec();
+    return quarters.map((q) => ({
+      ...q.toObject(),
+      _id: q._id.toString(),
+      communeId: q.communeId.toString(),
+    }));
+  }
+
+  async findByCommuneId(communeId: string): Promise<IQuarter[]> {
+    const quarters = await this.quarterModel.find({ communeId }).exec();
+    return quarters.map((q) => ({
+      ...q.toObject(),
+      _id: q._id.toString(),
+      communeId: q.communeId.toString(),
+    }));
+  }
 }
