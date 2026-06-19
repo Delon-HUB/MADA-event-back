@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { IRegion } from './dto/region.dto';
-import { InjectModel } from '@nestjs/mongoose';
 import { RegionEntity } from './entities/region.entity';
 import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class RegionService {
@@ -26,5 +26,12 @@ export class RegionService {
     };
   }
 
-  async findAll() {}
+  async findAll(): Promise<IRegion[]> {
+    const regions = await this.regionModel.find().exec();
+    return regions.map((r) => ({
+      ...r.toObject(),
+      _id: r._id.toString(),
+      districts: [],
+    }));
+  }
 }
