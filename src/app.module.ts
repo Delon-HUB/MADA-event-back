@@ -20,7 +20,7 @@ import { QuarterModule } from './modules/location/quarter/quarter.module';
       process.env.MONGO_URI || 'mongodb://localhost/MADA-event:270017',
     ),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
+      rootPath: join(process.cwd(), 'public'),
       serveRoot: '/public',
     }),
     AuthModule,
